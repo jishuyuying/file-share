@@ -1,6 +1,7 @@
 package com.example.fileshare.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -12,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class IndexController {
 
 
-    @RequestMapping("/home")
-    public String index() {
-        return "home";
+    @RequestMapping("/{html}")
+    public String index(@PathVariable String html) {
+        return html;
     }
 
 

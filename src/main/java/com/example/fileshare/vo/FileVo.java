@@ -29,5 +29,8 @@ public class FileVo {
     @TableField(exist = false)
     private int type;
 
+    @TableField(exist = false)
+    private String fileSize;
+
 
 }

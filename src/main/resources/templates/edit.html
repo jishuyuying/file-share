@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <link rel="stylesheet" th:href="@{/static/css/main.css}" href="/static/css/main.css"/>
+    <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" href="/static/layui/css/layui.css"/>
+    <style>
+        /*防止 table 出现横向滚动条*/
+        /*body {*/
+        /*    overflow-y: scroll;*/
+        /*    !*overflow-x: hidden;*!*/
+        /*}*/
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <!--  菜单  -->
+    <div th:include="header :: common"></div>
+
+    <div class="main">
+
+        <div class="self-body">
+            <textarea id="demo" style="display: none;"></textarea>
+            <div style="margin-top: 20px;text-align: center;margin-bottom: 50px">
+                <button class="layui-btn layui-btn-blue" lay-submit lay-filter="formDemo">提交</button>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+</body>
+<script th:src="@{/static/layui/layui.js}" src="/static/layui/layui.js" type="text/javascript"></script>
+<script th:src="@{/static/js/main.js}" th:inline="none" type="text/javascript"></script>
+
+<script type="text/javascript" th:inline="none">
+    //let layEdit = layui.layedit;
+    $(function (){
+        setActive("edit");
+    })
+
+    layEdit.set({
+        uploadImage: {url: '/file/img/upload', type: 'post', size: 200}
+    });
+
+    let layBuild = layEdit.build('demo', {
+        tool: [
+            'strong' //加粗
+            , 'italic' //斜体
+            , 'underline' //下划线
+            , 'del' //删除线
+            , '|' //分割线
+            , 'left' //左对齐
+            , 'center' //居中对齐
+            , 'right' //右对齐
+            , 'link' //超链接
+            , 'unlink' //清除链接
+            , 'face' //表情
+            , 'image' //插入图片
+            , 'help' //帮助
+        ],
+        height: 600, //设置编辑器高度
+
+    }); //建立编辑器
+
+
+    $.get("/file/getEdit", function (e) {
+        if (e.data && e.data.content) {
+            //初始化值
+            layEdit.setContent(layBuild, e.data.content);
+        }
+    });
+
+
+    form.on('submit(formDemo)', function (data) {
+        let content = layEdit.getContent(layBuild);//通过layedit.getContent()方法获得富文本编辑器内容
+        $.post("/file/saveEdit", {content: content}, function (e) {
+            if (e) {
+                layer.alert("保存成功！", {offset: '150px', icon: 1, title: '提示'});
+            }
+        });
+        //alert(content)
+        //阻止表单跳转，我们使用post方法提交给servlet
+        return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+    });
+
+
+
+</script>
+
+
+</html>

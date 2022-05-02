@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS T_FILE;
 DROP TABLE IF EXISTS t_file;
 
 
@@ -11,4 +10,15 @@ CREATE TABLE t_file
   file_path VARCHAR(100) NULL DEFAULT NULL COMMENT '文件路径',
   create_time VARCHAR(30) NULL DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (id)
+);
+
+
+DROP TABLE IF EXISTS t_edit;
+
+
+CREATE TABLE t_edit
+(
+    id BIGINT(20) NOT NULL COMMENT '主键ID',
+    content CLOB NULL DEFAULT NULL COMMENT '内容',
+    PRIMARY KEY (id)
 );

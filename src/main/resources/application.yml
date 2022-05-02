@@ -2,6 +2,10 @@ server:
   port: 9996
   tomcat:
     uri-encoding: UTF-8
+  max-http-header-size: 10240000
+#    tomcat:
+#      max-http-header-size: 10240000
+#      max-http-post-size: 10240000
 
 spring:
   freemarker:
@@ -18,15 +22,19 @@ spring:
 
   datasource:
     driver-class-name: org.h2.Driver
-    #schema: classpath:db/schema.sql #??????????????schema.sql????????????
-    #data: classpath:db/data.sql #??????????????data.sql????????????
-    url: jdbc:h2:file:./db/h2db #??h2??????????????????
+    # schema: classpath:db/schema.sql
+    # data: classpath:db/data.sql
+    url: jdbc:h2:file:./db/h2db
     username: root
     password: 123456
+    platform: h2
 
   h2:
     console:
-      enabled: true #??web console??
+      enabled: true
+      path: /h2
+      settings:
+        web-allow-others: true
 
   servlet:
     multipart:

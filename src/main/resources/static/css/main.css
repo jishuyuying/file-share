@@ -1,6 +1,6 @@
 .main{
-    margin: 80px auto;
-    width: 50%;
+    /*margin: 80px auto;*/
+    /*width: 50%;*/
 }
 .color-gray{
     background-color: #92B8B1;
@@ -8,3 +8,28 @@
 .box{
     height: 60px;
 }
+.center{
+    margin: 0 auto;
+    width: 50%;
+}
+.width-70{
+    width: 70%;
+}
+.width-80{
+    width: 80%;
+}
+.width-90{
+    width: 90%;
+}
+.hand{
+    cursor: pointer;
+}
+.right-30{
+    margin-right: 30px;
+}
+.self-body{
+    width: 80%;
+    margin-top: 10px;
+    margin-left: 10%;
+}
+

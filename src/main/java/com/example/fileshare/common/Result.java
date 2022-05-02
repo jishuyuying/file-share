@@ -24,7 +24,7 @@ public class Result<T> {
     private T data;
 
     public Result() {
-        this.code = 200;
+        this.code = 0;
         this.message = "success";
         this.success = true;
         this.count = 0L;
