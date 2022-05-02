@@ -64,8 +64,12 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
                 fileVo.setType(TYPE_FOLDER);
                 fileVo.setFileSize("-");
             } else {
-                String size = String.format("%.2f", (double) tFile.length() / 1024 / 1024);
-                fileVo.setFileSize(size + "MB");
+                if(tFile.length() / 1024 < 1){
+                    fileVo.setFileSize("< 1kB");
+                }else {
+                    String size = String.format("%.2f", (double) tFile.length() / 1024 / 1024);
+                    fileVo.setFileSize(size + "MB");
+                }
                 fileVo.setType(TYPE_FILE);
             }
             fileVo.setFilePath(filePath);
