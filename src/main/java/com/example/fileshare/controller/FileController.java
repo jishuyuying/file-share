@@ -50,15 +50,14 @@ public class FileController {
     }
 
     @GetMapping("/searchFolder")
-    public Result<List<FileVo>> searchFolder(){
-        return Result.success(fileService.searchFolder());
+    public Result<List<FileVo>> searchFolder(String folderPath){
+        return Result.success(fileService.searchFolder(folderPath));
     }
 
 
-
     @GetMapping("/createDirectory")
-    public Result<String> createDirectory(String directoryName){
-        return Result.success(fileService.createDirectory(directoryName));
+    public Result<String> createDirectory(String filePath, String directoryName){
+        return Result.success(fileService.createDirectory(filePath, directoryName));
     }
 
 

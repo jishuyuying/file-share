@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,16 +40,23 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
     private EditMapper editMapper;
 
     @Override
-    public List<FileVo> searchFolder() {
-        File file = new File(this.getFilePath());
-        if (!file.exists()) {
-            file.mkdir();
+    public List<FileVo> searchFolder(String folderPath) {
+        File file;
+        final String filePath;
+        if (StringUtils.hasText(folderPath)) {
+            filePath = folderPath;
+            file = new File(filePath);
+        } else {
+            filePath = this.getFilePath();
+            file = new File(filePath);
+            if (!file.exists()) {
+                file.mkdir();
+            }
         }
         File[] files = file.listFiles();
         if (Objects.isNull(files)) {
             return Collections.emptyList();
         }
-        final String filePath = this.getFilePath();
         List<FileVo> list = this.listByFolderPath(filePath);
         List<FileVo> res = new ArrayList<>();
         for (File tFile : files) {
@@ -64,9 +72,9 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
                 fileVo.setType(TYPE_FOLDER);
                 fileVo.setFileSize("-");
             } else {
-                if(tFile.length() / 1024 < 1){
+                if (tFile.length() / 1024 < 1) {
                     fileVo.setFileSize("< 1kB");
-                }else {
+                } else {
                     String size = String.format("%.2f", (double) tFile.length() / 1024 / 1024);
                     fileVo.setFileSize(size + "MB");
                 }
@@ -85,7 +93,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         if (!StringUtils.hasText(folderPath)) {
             targetPath = this.getFilePath();
         } else {
-            targetPath = this.getFilePath() + File.separatorChar + folderPath;
+            targetPath = folderPath;
         }
         String filename = file.getOriginalFilename();
         if (!StringUtils.hasText(filename)) {
@@ -95,22 +103,28 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         FileVo fileVo = new FileVo();
         fileVo.setFileName(filename);
         fileVo.setFilePath(targetPath);
-        fileVo.setCreateTime("2022-01-01 12:23:23");
+        fileVo.setCreateTime(getCreateTime());
         fileVo.setType(TYPE_FILE);
         fileVo.setId(new Date().getTime());
         this.save(fileVo);
     }
 
     @Override
-    public String createDirectory(String directoryName) {
+    public String createDirectory(String filePath, String directoryName) {
         if (!StringUtils.hasText(directoryName)) {
             throw new BizException("文件名不可为空");
         }
-        if (this.checkFileExisted(directoryName)) {
+        if (this.checkFileExisted(filePath, directoryName)) {
             throw new BizException("文件夹已存在");
         }
-        if (new File(this.getFilePath() + File.separatorChar + directoryName).mkdir()) {
-            return "文件夹创建成功";
+        if (StringUtils.hasText(filePath)) {
+            if (new File(filePath + File.separatorChar + directoryName).mkdir()) {
+                return "文件夹创建成功";
+            }
+        } else {
+            if (new File(this.getFilePath() + File.separatorChar + directoryName).mkdir()) {
+                return "文件夹创建成功";
+            }
         }
         return "文件夹创建失败";
     }
@@ -125,9 +139,18 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
                     if (Objects.nonNull(files)) {
                         for (File tFile : files) {
                             if (tFile.getName().equals(fileVo.getFileName())) {
-                                if ((TYPE_FILE == fileVo.getType() && tFile.isFile()) ||
-                                        (TYPE_FOLDER == fileVo.getType() && tFile.isDirectory())) {
+                                if ((TYPE_FILE == fileVo.getType() && tFile.isFile())) {
                                     if (tFile.delete()) {
+                                        LambdaQueryWrapper<FileVo> queryWrapper = new LambdaQueryWrapper<>();
+                                        queryWrapper.eq(FileVo::getFilePath, fileVo.getFilePath());
+                                        queryWrapper.eq(FileVo::getFileName, fileVo.getFileName());
+                                        this.remove(queryWrapper);
+                                        return "删除成功";
+                                    }
+                                    return "删除失败";
+                                } else if (TYPE_FOLDER == fileVo.getType() && tFile.isDirectory()) {
+                                    // 文件夹递归删除
+                                    if (delFiles(tFile)) {
                                         return "删除成功";
                                     }
                                     return "删除失败";
@@ -147,17 +170,17 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         //PDF文件地址
         if (file.exists()) {
             byte[] data = null;
-            FileInputStream input=null;
+            FileInputStream input = null;
             try {
-                input= new FileInputStream(file);
+                input = new FileInputStream(file);
                 data = new byte[input.available()];
                 input.read(data);
                 response.getOutputStream().write(data);
             } catch (Exception e) {
                 // do nothing
-            }finally{
+            } finally {
                 try {
-                    if(input!=null){
+                    if (input != null) {
                         input.close();
                     }
                 } catch (IOException e) {
@@ -179,7 +202,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         FileVo fileVo = new FileVo();
         fileVo.setFileName(filename);
         fileVo.setFilePath(targetPath);
-        fileVo.setCreateTime("2022-01-01 12:23:23");
+        fileVo.setCreateTime(getCreateTime());
         fileVo.setType(TYPE_FILE);
         fileVo.setId(new Date().getTime());
         this.save(fileVo);
@@ -204,7 +227,10 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         return editMapper.selectOne(queryWrapper);
     }
 
-    private boolean checkFileExisted(String directoryName) {
+    private boolean checkFileExisted(String filePath, String directoryName) {
+        if (StringUtils.hasText(filePath)) {
+            return new File(filePath + File.separatorChar + directoryName).exists();
+        }
         return new File(this.getFilePath() + File.separatorChar + directoryName).exists();
     }
 
@@ -245,6 +271,37 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
             return fileRootPath + "/file";
         }
         return System.getProperty("user.dir") + "/file";
+    }
+
+
+    /**
+     * 递归删除某个目录及目录下所有的子文件和子目录
+     *
+     * @param file 文件或者目录
+     * @return 删除结果
+     */
+    public static boolean delFiles(File file) {
+        boolean result = false;
+        if (file.isDirectory()) {
+            File[] childrenFiles = file.listFiles();
+            for (File childFile : childrenFiles) {
+                result = delFiles(childFile);
+                if (!result) {
+                    return false;
+                }
+            }
+        }
+        //删除文件、空目录
+        result = file.delete();
+        //TODO 删除数据库记录
+        return result;
+    }
+
+
+
+    public static String getCreateTime(){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return simpleDateFormat.format(new Date());
     }
 
 

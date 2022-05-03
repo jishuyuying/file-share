@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 2022/5/2 10:20
  */
 @Configuration
-public class MyWebConfig {
+public class WebConfig {
 
 
     /**

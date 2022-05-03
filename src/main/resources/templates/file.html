@@ -25,6 +25,21 @@
                             <input type="text" name="price_min" placeholder="请输入文件名" autocomplete="off"
                                    class="layui-input">
                         </div>
+                        <div class="layui-btn-group">
+                            <button type="button" class="layui-btn layui-btn-xs layui-primary" onclick="history.go(0)">
+                                <i class="layui-icon layui-icon-search"></i>搜索
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-xs layui-btn" onclick="history.go(0)"><i
+                                    class="layui-icon layui-icon-top"></i>根目录
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-xs layui-btn" onclick="backFolder(-1)"><i
+                                    class="layui-icon layui-icon-return"></i>上一级
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-xs layui-btn" onclick="history.go(0)"><i
+                                    class="layui-icon layui-icon-refresh"></i>刷新
+                            </button>
+                        </div>
+
                     </div>
 
                     <div class="layui-inline" style="float: right">
@@ -35,8 +50,18 @@
                     </div>
                 </div>
 
+
             </div>
-            <div class="layui-card-body" style="min-height: 200px">
+            <div class="layui-card-body" style="min-height: 300px">
+                <blockquote class="layui-elem-quote">
+                    <span class="layui-breadcrumb" lay-separator="/" lay-filter="bread" id="menuRoot">
+                              <a href="">home</a>
+                        <!--                              <a href="">img</a>-->
+                        <!--                              <a href="">test</a>-->
+                        <!--                              <a><cite>qq.png</cite></a>-->
+                            </span>
+                </blockquote>
+
                 <div>
                     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
                         <legend>拖拽上传</legend>
@@ -76,12 +101,16 @@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
-
+<!--<script type="text/javascript">-->
+<!--    const folderPath = [[${folderPath}]];-->
+<!--</script>-->
 <script type="text/javascript" th:inline="none">
 
     $(function () {
         setActive("file");
     })
+
+    let folderPath = '';
 
     //拖拽上传
     upload.render({
@@ -96,6 +125,11 @@
             flush()
             return layer.msg('上传成功');
         },
+        before: function (){
+            this.data = {
+                "path": folderPath
+            }
+        },
         error: function (e) {
             console.log(e)
             return layer.msg('上传失败');
@@ -105,10 +139,13 @@
     });
 
 
-    table.render({
+    const tableIndex = table.render({
         elem: '#fileTable'
         , url: '/file/searchFolder'
         , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+        , where: {
+            "folderPath": folderPath
+        }
         , cols: [[
             {
                 title: '', fixed: 'left', width: '5%', align: 'center', templet: function (d) {
@@ -121,7 +158,15 @@
                     return html;
                 }, unresize: true
             },
-            {field: 'fileName', width: '25%', title: '文件名'},
+            {
+                field: 'fileName', width: '25%', title: '文件名', templet: function (d) {
+                    if (d.type === 1) {
+                        //href="javascript:void(0);;return false;"
+                        return '<a href="javascript:void(0)" onclick="enterFolder(' + JSON.stringify(d).replace(/\"/g, "'") + ')" style="color: #1E9FFF">' + d.fileName + '</a>'
+                    }
+                    return d.fileName
+                }
+            },
             {field: 'createTime', width: '20%', title: '创建日期'},
             {field: 'fileSize', width: '15%', title: '大小'},
             {field: 'createName', width: '15%', title: '创建者'},
@@ -174,7 +219,7 @@
                 //layer.full(index);
             }
 
-        } else if (obj.event === 'download'){
+        } else if (obj.event === 'download') {
             downloadByUrl({
                 url: "/file/view?filePath=" + data.filePath + "\\" + data.fileName,
                 target: '_self',
@@ -226,7 +271,7 @@
 
 
     function createDirectory(name) {
-        $.get("/file/createDirectory", {'directoryName': name},
+        $.get("/file/createDirectory", {'directoryName': name, "filePath": folderPath},
             function (dat) {
                 layer.msg(dat.message);
                 flush()
@@ -242,7 +287,7 @@
             data: JSON.stringify(file),
             dataType: "json",
             success: function (data) {
-                alert(data.message);
+                layer.msg(data.message);
                 flush()
             },
             error: function (msg) {
@@ -255,9 +300,80 @@
         window.open("/static/js/web/viewer.html?file=/file/view?filePath=" + data.filePath + "\\" + data.fileName);
     }
 
+    let elem = layui.element;
+
+    // $("#menuRoot").append('<a href="">home</a>');
+    // elem.render('breadcrumb','bread');
+
+    let strArr = ['home'];
+
+    function enterFolder(data) {
+        console.log(data)
+        resetBreadcrumb(data)
+        folderPath = data.filePath + "\\" + data.fileName;
+        table.reload('fileTable', {
+            where: {
+                "folderPath": folderPath
+            }
+        });
+    }
+
+
+    function resetBreadcrumb(data) {
+        if (data && data.fileName) {
+            $("#menuRoot").empty()
+            strArr.push(data.fileName)
+            strArr.forEach((item, index, array) => {
+                //执行代码
+                $("#menuRoot").append('<a href="">' + item + '</a>');
+            })
+            elem.render('breadcrumb', 'bread');
+        }
+    }
+
+
+    function reduceBreadcrumb(fileName) {
+        if (fileName) {
+            $("#menuRoot").empty()
+            const num = strArr.indexOf(fileName)
+            if (num > 0 && num === strArr.length - 1) {
+                strArr.pop()
+            }
+            strArr.forEach((item, index, array) => {
+                //执行代码
+                $("#menuRoot").append('<a href="">' + item + '</a>');
+            })
+            elem.render('breadcrumb', 'bread');
+        }
+    }
 
     function flush() {
         history.go(0)
+    }
+
+    function backFolder(num) {
+        if (num === -1) {
+            //上一级
+            if (folderPath) {
+                let path = folderPath.replace('/', '\\');
+                if (path.endsWith("\\file\\")) {
+                    layer.msg("已到根目录")
+                    return
+                }
+                if (path.endsWith("\\")) {
+                    path = path.substr(0, path.lastIndexOf("\\"));
+                }
+                let lastPath = path.substr(0, path.lastIndexOf("\\"));
+                reduceBreadcrumb(path.substr(path.lastIndexOf("\\") + 1, path.length))
+                const file = {
+                    "filePath": lastPath,
+                    "fileName": ''
+                }
+                this.enterFolder(file)
+            } else {
+                history.go(0)
+            }
+        }
     }
 
 </script>

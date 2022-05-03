@@ -23,13 +23,13 @@ public interface IFileService extends IService<FileVo> {
 
     int TYPE_FILE = 2;
 
-    List<FileVo> searchFolder();
+    List<FileVo> searchFolder(String folderPath);
 
 
     void storeFile(MultipartFile file, String path) throws IOException;
 
 
-    String createDirectory(String directoryName);
+    String createDirectory(String filePath, String directoryName);
 
     String removeFile(FileVo fileVo);
 
