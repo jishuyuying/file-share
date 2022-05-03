@@ -6,7 +6,6 @@ import com.example.fileshare.mapper.FileMapper;
 import com.example.fileshare.vo.EditVo;
 import com.example.fileshare.vo.FileVo;
 import com.example.fileshare.vo.ImgVo;
-import com.sun.deploy.net.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
