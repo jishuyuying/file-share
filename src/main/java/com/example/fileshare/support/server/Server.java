@@ -14,10 +14,9 @@ import oshi.software.os.OperatingSystem;
 import oshi.util.Util;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.UnknownHostException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * 服务器相关信息
@@ -142,19 +141,62 @@ public class Server {
     /**
      * 设置服务器信息
      */
-    private void setSysInfo() throws UnknownHostException {
-        InetAddress ia = InetAddress.getLocalHost();
-
-        String computerIp = ia.getHostAddress();
-        String computerName = ia.getHostName();
+    private void setSysInfo() {
+//        InetAddress ia = InetAddress.getLocalHost();
+        InetAddress ia = getLocalHostExactAddress();
+        if(Objects.nonNull(ia)){
+            String computerIp = ia.getHostAddress();
+            String computerName = ia.getHostName();
+            sys.setComputerName(computerName);
+            sys.setComputerIp(computerIp);
+        }
 
         Properties props = System.getProperties();
-        sys.setComputerName(computerName);
-        sys.setComputerIp(computerIp);
         sys.setOsName(props.getProperty("os.name"));
         sys.setOsArch(props.getProperty("os.arch"));
         sys.setUserDir(props.getProperty("user.dir"));
     }
+
+
+    /**
+     * 取代 InetAddress.getLocalHost()
+     * @return
+     */
+    public static InetAddress getLocalHostExactAddress() {
+        try {
+            InetAddress candidateAddress = null;
+
+            Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+            while (networkInterfaces.hasMoreElements()) {
+                NetworkInterface face = networkInterfaces.nextElement();
+                // 该网卡接口下的ip会有多个，也需要一个个的遍历，找到自己所需要的
+                for (Enumeration<InetAddress> inetAdders = face.getInetAddresses(); inetAdders.hasMoreElements(); ) {
+                    InetAddress inetAdder = inetAdders.nextElement();
+                    // 排除loopback回环类型地址（不管是IPv4还是IPv6 只要是回环地址都会返回true）
+                    if (!inetAdder.isLoopbackAddress()) {
+                        if (inetAdder.isSiteLocalAddress()) {
+                            // 如果是site-local地址，就是它了 就是我们要找的
+                            // ~~~~~~~~~~~~~绝大部分情况下都会在此处返回你的ip地址值~~~~~~~~~~~~~
+                            return inetAdder;
+                        }
+
+                        // 若不是site-local地址 那就记录下该地址当作候选
+                        if (candidateAddress == null) {
+                            candidateAddress = inetAdder;
+                        }
+
+                    }
+                }
+            }
+
+            // 如果出去loopback回环地之外无其它地址了，那就回退到原始方案吧
+            return candidateAddress == null ? InetAddress.getLocalHost() : candidateAddress;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     /**
      * 设置Java虚拟机

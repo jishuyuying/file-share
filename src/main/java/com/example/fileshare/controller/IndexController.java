@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/index")
 public class IndexController {
 
+    @RequestMapping("/")
+    public String defaultPath() {
+        return "file";
+    }
+
 
     @RequestMapping("/{html}")
     public String index(@PathVariable String html) {

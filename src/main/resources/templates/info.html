@@ -44,8 +44,16 @@
             margin-top: 11px;
         }
 
+        .top-10 {
+            margin-top: 10px;
+        }
+
         .top-30 {
             margin-top: 30px;
+        }
+
+        .bottom-30 {
+            margin-bottom: 30px;
         }
 
         .self-panel {
@@ -60,6 +68,7 @@
 
         .layui-form-item {
             margin-bottom: 0 !important;
+            /*margin: 10px 10px 30px;*/
         }
 
     </style>
@@ -70,44 +79,73 @@
     <div th:include="header :: common"></div>
     <div>
 
-
         <div class="layui-container">
 
-            <div class="layui-row top-30">
+            <div class="layui-row top-30" v-show="openOther">
                 <div class="layui-col-md6 layui-col-md-offset3">
 
-                    <table class="layui-table">
-                        <colgroup>
-                            <col width="150">
-                            <col width="200">
-                            <col>
-                        </colgroup>
-                        <thead>
-                        <tr>
-                            <th>属性</th>
-                            <th>值</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>名称</td>
-                            <td>{{sys.computerName}}</td>
-                        </tr>
-                        <tr>
-                            <td>地址</td>
-                            <td>{{sys.computerIp}}</td>
-                        </tr>
-                        <tr>
-                            <td>系统</td>
-                            <td>{{sys.osName}}</td>
-                        </tr>
-                        <tr>
-                            <td>模型</td>
-                            <td>{{sys.osArch}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    <div class="layui-collapse">
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">主机信息</h2>
+                            <div class="layui-colla-content">
+
+                                <table class="layui-table">
+                                    <colgroup>
+                                        <col width="150">
+                                        <col width="200">
+                                        <col>
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th>属性</th>
+                                        <th>值</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>名称</td>
+                                        <td>{{sys.computerName}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>地址</td>
+                                        <td>{{sys.computerIp}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>系统</td>
+                                        <td>{{sys.osName}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>模型</td>
+                                        <td>{{sys.osArch}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+
                 </div>
+
+            </div>
+
+
+            <div class="layui-row top-30" v-show="openOther">
+                <form class="layui-form" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">自动刷新</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="close" lay-skin="switch" :checked="checkedState"
+                                   lay-filter="switchTest" lay-text="ON|OFF">
+                        </div>
+                    </div>
+                    <!--                    <div class="layui-form-item">-->
+                    <!--                        <div class="layui-progress" lay-showpercent="true" lay-filter="progress-demo">-->
+                    <!--                            <div class="layui-progress-bar layui-bg-blue" lay-percent="0%"></div>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
+                </form>
 
             </div>
 
@@ -242,23 +280,7 @@
 
             </div>
 
-            <div class="layui-row top-30">
-                <form class="layui-form" action="">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">定时刷新</label>
-                        <div class="layui-input-block">
-                            <input type="checkbox" name="close" lay-skin="switch" :checked="checkedState"
-                                   lay-filter="switchTest" lay-text="ON|OFF">
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <div class="layui-progress" lay-showpercent="true" lay-filter="progress-demo">
-                            <div class="layui-progress-bar layui-bg-blue" lay-percent="0%"></div>
-                        </div>
-                    </div>
-                </form>
 
-            </div>
 
             <div class="layui-row top-30">
                 <table id="demo" lay-filter="test"></table>
@@ -269,6 +291,8 @@
 
 
         </div>
+
+
 
 
     </div>
@@ -314,7 +338,8 @@
             },
             timer: null,
             progressTimer:null,
-            checkedState: false
+            checkedState: false,
+            openOther: false
         },
         methods: {
             initTable() {
@@ -390,17 +415,17 @@
 
             },
             loadProgress() {
-                let element = layui.element;
-                //模拟loading
-                let n = 0;
-                this.progressTimer = setInterval(function () {
-                    n = n + 1;
-                    if (n > 100) {
-                        n = 0;
-                        //clearInterval( this.progressTimer);
-                    }
-                    element.progress('progress-demo', n + '%');
-                }, 100);
+                // let element = layui.element;
+                // //模拟loading
+                // let n = 0;
+                // this.progressTimer = setInterval(function () {
+                //     n = n + 1;
+                //     if (n > 100) {
+                //         n = 0;
+                //         //clearInterval( this.progressTimer);
+                //     }
+                //     element.progress('progress-demo', n + '%');
+                // }, 100);
             },
             resetTimer(tableIndex) {
                 const that = this;
@@ -409,27 +434,27 @@
                     if (this.timer !== null) {
                         clearInterval(this.timer);
                     }
-                    if (this.progressTimer !== null) {
-                        clearInterval(this.progressTimer);
-                        element.progress('progress-demo', 0 + '%');
-                    }
-                    that.loadProgress();
+                    // if (this.progressTimer !== null) {
+                    //     clearInterval(this.progressTimer);
+                    //     element.progress('progress-demo', 0 + '%');
+                    // }
+                    //that.loadProgress();
                     this.timer = setInterval(function () {
                         tableIndex.reload();
                         //that.loadProgress();
                     }, 1000 * 10);
 
-                    layer.msg("已启用定时刷新");
+                    layer.msg("已启用自动刷新，刷新间隔10s");
                 } else {
                     if (this.timer) {
                         //调用方法，关闭指定的定时器
                         clearInterval(this.timer);
-                        layer.msg("已关闭定时刷新");
+                        layer.msg("已关闭自动刷新");
                     }
-                    if (this.progressTimer !== null) {
-                        clearInterval(this.progressTimer);
-                        element.progress('progress-demo', 0 + '%');
-                    }
+                    // if (this.progressTimer !== null) {
+                    //     clearInterval(this.progressTimer);
+                    //     element.progress('progress-demo', 0 + '%');
+                    // }
                 }
             },
             parseRes(res) {
@@ -450,6 +475,7 @@
             }
         },
         mounted() {
+            setActive("info");
             this.initTable();
         }
     })
