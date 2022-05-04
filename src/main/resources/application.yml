@@ -3,9 +3,7 @@ server:
   tomcat:
     uri-encoding: UTF-8
   max-http-header-size: 10240000
-#    tomcat:
-#      max-http-header-size: 10240000
-#      max-http-post-size: 10240000
+
 
 spring:
   freemarker:
@@ -22,7 +20,7 @@ spring:
 
   datasource:
     driver-class-name: org.h2.Driver
-    # schema: classpath:db/schema.sql
+#    schema: classpath:db/schema.sql
     # data: classpath:db/data.sql
     url: jdbc:h2:file:./db/h2db
     username: root

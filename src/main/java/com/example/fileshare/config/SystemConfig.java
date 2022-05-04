@@ -1,16 +1,7 @@
 package com.example.fileshare.config;
 
 import com.example.fileshare.common.SystemInfo;
-import com.sun.management.OperatingSystemMXBean;
-import lombok.Getter;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Controller;
-import sun.dc.pr.PRError;
-
-import java.io.*;
-import java.lang.management.ManagementFactory;
-import java.math.BigDecimal;
-import java.util.*;
 
 /**
  * @author jmz jianminzhao@foxmail.com
