@@ -21,6 +21,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -82,6 +86,9 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
             }
             fileVo.setFilePath(filePath);
             fileVo.setCreateName("admin");
+            if(!StringUtils.hasText(fileVo.getCreateTime())){
+                fileVo.setCreateTime(getFileCreateTime(fileVo.getFilePath() + File.separator + fileVo.getFileName()));
+            }
             res.add(fileVo);
         }
         return res.stream().sorted(Comparator.comparing(FileVo::getType)).collect(Collectors.toList());
@@ -302,6 +309,21 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
     public static String getCreateTime(){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return simpleDateFormat.format(new Date());
+    }
+
+
+    public static String getFileCreateTime(String filePath) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        FileTime t = null;
+        try {
+            t = Files.readAttributes(Paths.get(filePath), BasicFileAttributes.class).creationTime();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(Objects.nonNull(t)){
+            return dateFormat.format(t.toMillis());
+        }
+        return "-";
     }
 
 
