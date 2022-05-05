@@ -1,12 +1,18 @@
 package com.example.fileshare.controller;
 
+import com.example.fileshare.common.Result;
 import com.example.fileshare.support.server.Server;
 import com.example.fileshare.support.server.server.Disk;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.fileshare.util.RequestUtil;
+import com.example.fileshare.vo.OnlineUser;
+import com.example.fileshare.websocket.WsSessionManager;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.socket.WebSocketSession;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 /**
  * @author jmz jianminzhao@foxmail.com
@@ -30,6 +36,20 @@ public class ServerController {
         Server server = new Server();
         server.initDisk();
         return server.getDisk();
+    }
+
+
+    @GetMapping("/ip")
+    public Result<String> getIp(HttpServletRequest request) throws Exception {
+        final String ip = new RequestUtil(request).getIp();
+        return Result.success(ip);
+    }
+
+
+    @GetMapping("/online")
+    public List<OnlineUser> getOnlineUsers() throws Exception {
+        final ConcurrentMap<String, WebSocketSession> sessionPool = WsSessionManager.getSessionPool();
+        return sessionPool.keySet().stream().map(s -> new OnlineUser().setIp(s)).collect(Collectors.toList());
     }
 
 

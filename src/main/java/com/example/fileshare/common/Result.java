@@ -57,6 +57,13 @@ public class Result<T> {
         return r;
     }
 
+    public static <T> Result<T> success(String message, T data) {
+        Result<T> r = new Result<>();
+        r.setMessage(message);
+        r.setData(data);
+        return r;
+    }
+
     public static <T> Result<T> success(Integer code, String message) {
         Result<T> r = new Result<>();
         r.setCode(code);

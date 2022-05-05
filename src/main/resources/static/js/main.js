@@ -55,3 +55,18 @@ function openWindow(url, opt) {
     noreferrer && feature.push('noreferrer=yes');
     window.open(url, target, feature.join(','));
 }
+
+//获取根路径
+function getRealPath() {
+    //获取当前网址
+    let curWwwPath = window.document.location.href;
+    //获取主机地址之后的目录
+    let pathName = window.document.location.pathname;
+    let pos = curWwwPath.indexOf(pathName);
+    //获取主机地址
+    let localhostPath = curWwwPath.substring(0, pos);
+    //获取带"/"的项目名
+    let projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+    //得到
+    return localhostPath + "";
+}
