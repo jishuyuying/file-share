@@ -200,7 +200,7 @@
         } else if (obj.event === 'detail') {
             if (data.fileName.indexOf(".pdf") !== -1) {
                 viewFile(data)
-            } else if (data.fileName.indexOf(".jpg") !== -1) {
+            } else if (data.fileName.indexOf(".jpg") !== -1 || data.fileName.indexOf(".png") !== -1) {
                 layer.photos({
                     photos: {"data": [{"src": "/file/view?filePath=" + data.filePath + "\\" + data.fileName}]},
                     closeBtn: true
