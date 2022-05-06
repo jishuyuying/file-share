@@ -15,7 +15,6 @@ spring:
     encoding: UTF-8
 
 
-  # ???? 404 ??
   mvc:
     static-path-pattern: /static/**
     throw-exception-if-no-handler-found: true
@@ -24,10 +23,11 @@ spring:
     driver-class-name: org.h2.Driver
     # schema: classpath:db/schema.sql
     # data: classpath:db/data.sql
-    url: jdbc:h2:file:./db/h2db
+    url: jdbc:h2:file:F:\filesystem\db\h2db
     username: root
     password: 123456
     platform: h2
+    type: com.zaxxer.hikari.HikariDataSource
 
   h2:
     console:

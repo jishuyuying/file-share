@@ -71,7 +71,6 @@
 <!--        </dependency>-->
 
 
-
         <!-- 常 用 工 具 类 -->
         <dependency>
             <groupId>cn.hutool</groupId>
@@ -94,6 +93,7 @@
     </dependencies>
 
     <build>
+        <finalName>${name}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -108,6 +108,11 @@
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
     </build>
 
 </project>
