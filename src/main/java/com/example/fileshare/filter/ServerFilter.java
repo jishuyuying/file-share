@@ -1,6 +1,8 @@
-package com.example.fileshare.config;
+package com.example.fileshare.filter;
 
+import com.example.fileshare.common.SessionManager;
 import com.example.fileshare.util.RequestUtil;
+import com.example.fileshare.vo.OnlineUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -8,8 +10,7 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.Date;
 
 /**
  * @author jmz jianminzhao@foxmail.com
@@ -21,8 +22,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @WebFilter(urlPatterns = {"/**"}, filterName = "tokenAuthorFilter")
 public class ServerFilter implements Filter {
 
-    private final CopyOnWriteArraySet<String> ipSet = new CopyOnWriteArraySet<>();
-
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -31,9 +30,11 @@ public class ServerFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String ip = new RequestUtil((HttpServletRequest)request).getIp();
-        log.info(ip);
-        ipSet.add(ip);
+        final HttpServletRequest httpRequest = (HttpServletRequest) request;
+        String ip = new RequestUtil(httpRequest).getIp();
+        final String sessionId = httpRequest.getSession().getId();
+        SessionManager.add(sessionId, new OnlineUser(ip, new Date()));
+        //log.info(ip);
         // 到下一个链
         chain.doFilter(request, response);
     }

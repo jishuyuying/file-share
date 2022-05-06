@@ -14,9 +14,11 @@ spring:
     suffix: .html
     encoding: UTF-8
 
+
   # ???? 404 ??
   mvc:
     static-path-pattern: /static/**
+    throw-exception-if-no-handler-found: true
 
   datasource:
     driver-class-name: org.h2.Driver

@@ -7,6 +7,11 @@ let layEdit = layui.layedit;
 let form = layui.form;//引入form模块
 
 
+$(function (){
+    $('.layui-table').css("width","100%");
+    $("th[data-field='bar']").css("border-right",'none');
+})
+
 function setActive(id) {
     $("#" + id).addClass("layui-this");
 }

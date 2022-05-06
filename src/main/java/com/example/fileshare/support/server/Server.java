@@ -100,7 +100,7 @@ public class Server {
         setDisk(si.getOperatingSystem());
         setCpuInfo(hal.getProcessor());
         setMemInfo(hal.getMemory());
-        setSysInfo();
+        //initSysInfo();
         setJvmInfo();
     }
 
@@ -141,7 +141,10 @@ public class Server {
     /**
      * 设置服务器信息
      */
-    private void setSysInfo() {
+    public void initSysInfo() {
+        if(sys == null){
+            sys = new Sys();
+        }
 //        InetAddress ia = InetAddress.getLocalHost();
         InetAddress ia = getLocalHostExactAddress();
         if(Objects.nonNull(ia)){

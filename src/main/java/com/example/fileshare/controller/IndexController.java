@@ -24,4 +24,9 @@ public class IndexController {
     }
 
 
+    @RequestMapping("/{directory}/{html}")
+    public String index(@PathVariable String directory, @PathVariable String html) {
+        return directory + "/" + html;
+    }
+
 }

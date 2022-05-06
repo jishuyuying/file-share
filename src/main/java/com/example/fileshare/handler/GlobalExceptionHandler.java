@@ -2,6 +2,7 @@ package com.example.fileshare.handler;
 
 import com.example.fileshare.common.BizException;
 import com.example.fileshare.common.Result;
+import com.example.fileshare.util.RequestUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.ws.Response;
 
 /**
  * @Author: ZJM
@@ -74,5 +77,16 @@ public class GlobalExceptionHandler {
         }
         return Result.failure(ex.getMessage());
     }
+
+    /**
+     * NoHandlerFoundException 异常捕获处理
+     * 请求的接口不存在
+     */
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public Result<String> noHandlerFoundExceptionHandler(HttpServletRequest request, NoHandlerFoundException e) {
+        //log.error("BAD_REQUEST|{}|{}: {}|{}", null != request ? request.getRequestURI() : "", e.getClass().getSimpleName(), e.getMessage(), null != request ? new RequestUtil(request).getIp() : "");
+        return Result.failure(404, "页面不存在");
+    }
+
 
 }

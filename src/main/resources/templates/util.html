@@ -3,61 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <title>json</title>
-    <link rel="stylesheet" th:href="@{/static/css/main.css}" href="/static/css/main.css"/>
     <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" href="/static/layui/css/layui.css"/>
+    <link rel="stylesheet" th:href="@{/static/css/main.css}" href="/static/css/main.css"/>
+
     <style>
-        .self-div{
-            border: 1px solid darkgrey;
-            height: 500px;
-        }
-        .top-30{
-            margin-top: 30px;
+        .self-div {
+            border: 1px solid #eeeeee;
+            height: 300px;
         }
 
-        .pad-20{
+        .pad-20 {
             padding: 20px;
         }
     </style>
 </head>
 <body>
 <div id="json">
+
+    <!--  菜单  -->
+    <div th:include="header :: common"></div>
+
+
     <div class="layui-container">
 
-        <div class="layui-row top-30 ">
+        <div class="layui-row top-30">
 
             <div class="layui-col-md5 self-div layui-col-md-offset1 pad-20">
 
                 <form class="layui-form" action="">
                     <div class="layui-form-item layui-form-text">
-                        <label class="layui-form-label">文本域</label>
+                        <label class="layui-form-label">文本</label>
                         <div class="layui-input-block">
-                            <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+                            <textarea style="height: 200px" name="desc" placeholder="请输入内容"
+                                      class="layui-textarea"></textarea>
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <div class="layui-input-block">
-                            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                            <button class="layui-btn" lay-submit lay-filter="formDemo">提交</button>
                             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                         </div>
                     </div>
                 </form>
 
 
-
             </div>
 
             <div class="layui-col-md5 self-div layui-col-md-offset1 pad-20">
 
                 <form class="layui-form" action="">
                     <div class="layui-form-item layui-form-text">
-                        <label class="layui-form-label">文本域</label>
+                        <label class="layui-form-label">文本</label>
                         <div class="layui-input-block">
-                            <textarea id="result" placeholder="" class="layui-textarea"></textarea>
+                            <textarea style="height: 200px" id="result" placeholder=""
+                                      class="layui-textarea"></textarea>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
+
+
+        <div class="layui-row top-30">
+            <div class="center">
+                <fieldset class="layui-elem-field">
+                    <legend>示例</legend>
+                    <div class="layui-field-box">
+                        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+                            <legend>json对象</legend>
+                        </fieldset>
+                        <pre class="layui-code">
+{
+    "code": "123456",
+    "name": "小明",
+    "age": "22",
+    "phone": 12345678900
+}
+                        </pre>
+
+                        <hr class="layui-border-green">
+
+                        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+                            <legend>url编码</legend>
+                        </fieldset>
+                        <pre class="layui-code">code=123456&name=小明&age=22&phone=12345678900</pre>
+
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
     </div>
 
 </div>
@@ -68,20 +103,10 @@
 <script th:inline="none" type="text/javascript">
 
 
+    $(function () {
+        setActive("util");
+    })
 
-    // {
-    // "pwUnitId": "b0440345-b0e8-4fc6-b4e0-64f7373d3582",
-    //     "pwUnitName": "山东中材默锐水务有限公司",
-    //     "enterName": "山东中材默锐水务有限公司",
-    //     "regAddr": "寿光市渤海化工园香江路以西渤海路以南",
-    //     "opAddr": "山东省潍坊市寿光市羊口镇渤海化工园香江路以西渤海路以南",
-    //     "zipcode": "262700",
-    //     "provinceCode": "370000000000",
-    //     "provinceName": "山东省",
-    //     "cityCode": "370700000000",
-    //     "cityName": "潍坊市",
-    //     "countyCode": "370783000000"
-    // }
 
     const getQueryJson = function (url) {
         let param = {}; // 存储最终JSON结果对象
@@ -93,18 +118,19 @@
     };
 
     //监听提交
-    form.on('submit(formDemo)', function(data){
+    form.on('submit(formDemo)', function (data) {
 
         //校验已存在重复数据阻止刷新form，阻止清空用户刚填写的数据
-        function stopDefault( e ) {
+        function stopDefault(e) {
             //阻止默认浏览器动作(W3C)
-            if ( e && e.preventDefault ){
+            if (e && e.preventDefault) {
                 e.preventDefault();
-            }else{//IE中阻止函数器默认动作的方式
+            } else {//IE中阻止函数器默认动作的方式
                 window.event.returnValue = false;
             }
             return false;
         }
+
         stopDefault();
 
         try {
@@ -116,7 +142,7 @@
 
             //console.log("params",params);
             $("#result").val(params);
-        }catch (SyntaxError){
+        } catch (SyntaxError) {
             //layer.msg("不合法的json字符串")
             console.log(getQueryJson(data.field.desc))
             $("#result").val(JSON.stringify(getQueryJson(data.field.desc)));

@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>header</title>
-    <link rel="stylesheet" th:href="@{/static/css/main.css}" href="/static/css/main.css"/>
     <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" href="/static/layui/css/layui.css"/>
     <script th:src="@{/static/libs/vue.min.js}" src="/static/libs/vue.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" th:href="@{/static/css/main.css}" href="/static/css/main.css"/>
     <style>
         /*防止 table 出现横向滚动条*/
         /*body {*/
@@ -25,9 +25,9 @@
             <li class="layui-nav-item" id="info">
                 <a href="javascript:;">系统管理</a>
                 <dl class="layui-nav-child"> <!-- 二级菜单 -->
-                    <dd><a th:href="@{/index/online}" href="/index/online">在线用户</a></dd>
-                    <dd><a href="">系统设置</a></dd>
-                    <dd><a th:href="@{/index/info}" href="/index/info">系统信息</a></dd>
+                    <dd><a th:href="@{/index/manage/online}" href="/index/manage/online">在线用户</a></dd>
+                    <dd><a th:href="@{/index/manage/sys}" href="/index/manage/sys">主机信息</a></dd>
+                    <dd><a th:href="@{/index/manage/info}" href="/index/manage/info">系统信息</a></dd>
                 </dl>
             </li>
             <li class="layui-nav-item layui-layout-right right-30">
@@ -36,6 +36,7 @@
                     <dd><a class="hand">修改信息</a></dd>
                 </dl>
             </li>
+            <li class="layui-nav-item" id="util"><a th:href="@{/index/util}" href="/index/util">实用工具</a></li>
         </ul>
 
     </header>

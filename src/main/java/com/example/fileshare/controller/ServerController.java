@@ -1,9 +1,12 @@
 package com.example.fileshare.controller;
 
 import com.example.fileshare.common.Result;
+import com.example.fileshare.common.SessionManager;
 import com.example.fileshare.support.server.Server;
 import com.example.fileshare.support.server.server.Disk;
+import com.example.fileshare.support.server.server.Sys;
 import com.example.fileshare.util.RequestUtil;
+import com.example.fileshare.vo.OnlineUser;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,6 +46,18 @@ public class ServerController {
     }
 
 
+    @GetMapping("/online")
+    public List<OnlineUser> getOnlineUsers() throws Exception {
+        return SessionManager.getAll();
+    }
+
+
+    @GetMapping("/sys")
+    public Sys getSys() throws Exception {
+        Server server = new Server();
+        server.initSysInfo();
+        return server.getSys();
+    }
 
 
 }
