@@ -6,6 +6,7 @@ import com.example.fileshare.common.BizException;
 import com.example.fileshare.mapper.EditMapper;
 import com.example.fileshare.mapper.FileMapper;
 import com.example.fileshare.service.IFileService;
+import com.example.fileshare.util.SerializeUtil;
 import com.example.fileshare.vo.EditVo;
 import com.example.fileshare.vo.FileVo;
 import com.example.fileshare.vo.ImgVo;
@@ -201,11 +202,6 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         }
         FileUtils.copyFile(Objects.requireNonNull(MultipartFileToFile(file)), new File(targetPath, filename));
         FileVo fileVo = this.getFileVo(filename, targetPath);
-//        fileVo.setFileName(filename);
-//        fileVo.setFilePath(targetPath);
-//        fileVo.setCreateTime(getCreateTime());
-//        fileVo.setType(TYPE_FILE);
-//        fileVo.setId(new Date().getTime());
         this.save(fileVo);
         ImgVo imgVo = new ImgVo();
         imgVo.setSrc("/file/view?filePath=" + targetPath + File.separatorChar + filename);
@@ -218,6 +214,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         EditVo editVo = new EditVo();
         editVo.setId(new Date().getTime());
         editVo.setContent(content);
+        SerializeUtil.serialize(editVo);
         return editMapper.insert(editVo);
     }
 
@@ -225,7 +222,8 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
     public EditVo getEdit() {
         LambdaQueryWrapper<EditVo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.orderByDesc(EditVo::getId).last("limit 1");
-        return editMapper.selectOne(queryWrapper);
+        final EditVo editVo = editMapper.selectOne(queryWrapper);
+        return Objects.isNull(editVo) ? SerializeUtil.deserialize(EditVo.class) : editVo;
     }
 
     private boolean checkFileExisted(String filePath, String directoryName) {
