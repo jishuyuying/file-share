@@ -35,7 +35,7 @@ function downloadByUrl({
         link.target = target;
 
         if (link.download !== undefined) {
-            link.download = fileName || url.substring(url.lastIndexOf('/') + 1, url.length);
+            link.download = fileName || url.substring(url.lastIndexOf('\\') + 1, url.length);
         }
 
         if (document.createEvent) {

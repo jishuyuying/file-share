@@ -86,7 +86,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
             }
             fileVo.setFilePath(filePath);
             fileVo.setCreateName("admin");
-            if(!StringUtils.hasText(fileVo.getCreateTime())){
+            if (!StringUtils.hasText(fileVo.getCreateTime())) {
                 fileVo.setCreateTime(getFileCreateTime(fileVo.getFilePath() + File.separator + fileVo.getFileName()));
             }
             res.add(fileVo);
@@ -107,13 +107,18 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
             throw new RuntimeException("错误的文件名");
         }
         FileUtils.copyFile(Objects.requireNonNull(MultipartFileToFile(file)), new File(targetPath, filename));
+        FileVo fileVo = this.getFileVo(filename, targetPath);
+        this.save(fileVo);
+    }
+
+    private FileVo getFileVo(String filename, String targetPath) {
         FileVo fileVo = new FileVo();
         fileVo.setFileName(filename);
         fileVo.setFilePath(targetPath);
         fileVo.setCreateTime(getCreateTime());
         fileVo.setType(TYPE_FILE);
         fileVo.setId(new Date().getTime());
-        this.save(fileVo);
+        return fileVo;
     }
 
     @Override
@@ -174,25 +179,14 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
     @Override
     public void view(String filePath, HttpServletResponse response) {
         File file = new File(filePath);
-        //PDF文件地址
+        // PDF文件地址
         if (file.exists()) {
-            byte[] data = null;
-            FileInputStream input = null;
-            try {
-                input = new FileInputStream(file);
-                data = new byte[input.available()];
+            try (FileInputStream input = new FileInputStream(file)) {
+                byte[] data = new byte[input.available()];
                 input.read(data);
                 response.getOutputStream().write(data);
             } catch (Exception e) {
                 // do nothing
-            } finally {
-                try {
-                    if (input != null) {
-                        input.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
         }
 
@@ -206,12 +200,12 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
             throw new BizException("错误的文件名");
         }
         FileUtils.copyFile(Objects.requireNonNull(MultipartFileToFile(file)), new File(targetPath, filename));
-        FileVo fileVo = new FileVo();
-        fileVo.setFileName(filename);
-        fileVo.setFilePath(targetPath);
-        fileVo.setCreateTime(getCreateTime());
-        fileVo.setType(TYPE_FILE);
-        fileVo.setId(new Date().getTime());
+        FileVo fileVo = this.getFileVo(filename, targetPath);
+//        fileVo.setFileName(filename);
+//        fileVo.setFilePath(targetPath);
+//        fileVo.setCreateTime(getCreateTime());
+//        fileVo.setType(TYPE_FILE);
+//        fileVo.setId(new Date().getTime());
         this.save(fileVo);
         ImgVo imgVo = new ImgVo();
         imgVo.setSrc("/file/view?filePath=" + targetPath + File.separatorChar + filename);
@@ -254,7 +248,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         // 获取文件后缀
         assert fileName != null;
         String prefix = fileName.substring(fileName.lastIndexOf("."));
-        // 若需要防止生成的临时文件重复,能够在文件名后添加随机码
+        // 若需要防止生成的临时文件重复, 能够在文件名后添加随机码
         try {
             File file = File.createTempFile(fileName, prefix);
             multiFile.transferTo(file);
@@ -291,12 +285,15 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         boolean result = false;
         if (file.isDirectory()) {
             File[] childrenFiles = file.listFiles();
-            for (File childFile : childrenFiles) {
-                result = delFiles(childFile);
-                if (!result) {
-                    return false;
+            if (childrenFiles != null) {
+                for (File childFile : childrenFiles) {
+                    result = delFiles(childFile);
+                    if (!result) {
+                        return false;
+                    }
                 }
             }
+
         }
         //删除文件、空目录
         result = file.delete();
@@ -305,8 +302,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
     }
 
 
-
-    public static String getCreateTime(){
+    public static String getCreateTime() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return simpleDateFormat.format(new Date());
     }
@@ -320,7 +316,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if(Objects.nonNull(t)){
+        if (Objects.nonNull(t)) {
             return dateFormat.format(t.toMillis());
         }
         return "-";

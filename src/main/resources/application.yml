@@ -1,5 +1,5 @@
 server:
-  port: 9996
+  port: 9997
   tomcat:
     uri-encoding: UTF-8
   max-http-header-size: 10240000
@@ -21,9 +21,10 @@ spring:
 
   datasource:
     driver-class-name: org.h2.Driver
-    # schema: classpath:db/schema.sql
+    schema: classpath:db/schema.sql
     # data: classpath:db/data.sql
-    url: jdbc:h2:file:F:\filesystem\db\h2db
+#    url: jdbc:h2:file:F:\filesystem\db\h2db
+    url: jdbc:h2:file:.\db\h2db
     username: root
     password: 123456
     platform: h2
