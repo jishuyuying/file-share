@@ -22,7 +22,10 @@
     <div class="main">
 
         <div class="self-body">
-            <textarea id="demo" style="display: none;" onblur="subTextarea(this)"></textarea>
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                <legend>ctrl + enter 保存 / shift + enter 刷新</legend>
+            </fieldset>
+            <textarea id="demo" style="display: none;"></textarea>
             <div style="margin-top: 20px;text-align: center;margin-bottom: 50px">
                 <button class="layui-btn layui-btn-blue" lay-submit lay-filter="formDemo">提交</button>
             </div>
@@ -39,8 +42,31 @@
 
 <script type="text/javascript" th:inline="none">
     //let layEdit = layui.layedit;
-    $(function (){
+    $(function () {
         setActive("edit");
+
+        document.onkeydown = function (event) {
+            if (event.ctrlKey && event.keyCode === 13) {
+                //这里只能用alt，shift，ctrl等去组合其他键event.altKey、event.ctrlKey、event.shiftKey 属性
+                let content = layEdit.getContent(layBuild);
+                // 通过layedit.getContent()方法获得富文本编辑器内容
+                $.post("/file/saveEdit", {content: content}, function (e) {
+                    if (e) {
+                        layer.msg("保存成功！");
+                    }
+                });
+            }
+            if (event.shiftKey && event.keyCode === 13) {
+                $.get("/file/getEdit", function (e) {
+                    if (e.data && e.data.content) {
+                        //初始化值
+                        layEdit.setContent(layBuild, e.data.content);
+                        layer.msg("刷新成功！");
+                    }
+                });
+            }
+        };
+
     })
 
     layEdit.set({
@@ -88,21 +114,6 @@
         //阻止表单跳转，我们使用post方法提交给servlet
         return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
     });
-
-
-
-
-    // 截取前256个字符:
-    function subTextarea(_this) {
-        let content = layEdit.getContent(layBuild);
-        // 通过layedit.getContent()方法获得富文本编辑器内容
-        $.post("/file/saveEdit", {content: content}, function (e) {
-            if (e) {
-                layer.msg("保存成功！");
-            }
-        });
-    }
-
 
 
 </script>
