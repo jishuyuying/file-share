@@ -32,8 +32,8 @@ public class ServerFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest httpRequest = (HttpServletRequest) request;
         String ip = new RequestUtil(httpRequest).getIp();
-        final String sessionId = httpRequest.getSession().getId();
-        SessionManager.add(sessionId, new OnlineUser(ip, new Date()));
+        //final String sessionId = httpRequest.getSession().getId();
+        SessionManager.add(ip, new OnlineUser(ip, new Date()));
         // log.info(ip);
         // 到下一个链
         chain.doFilter(request, response);

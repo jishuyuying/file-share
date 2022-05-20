@@ -41,7 +41,7 @@ public class SessionClearTask {
                 long minute = ((timeLag / (60 * 1000)) - day * 24 * 60 - hour * 60);
                 if (minute >= 3) {
                     log.info("用户ip:{} 已过期", entry.getValue().getIp());
-                    SessionManager.remove(entry.getKey());
+                    SessionManager.remove(entry.getValue().getIp());
                 }
             }
         }
