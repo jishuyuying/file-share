@@ -124,15 +124,18 @@
         , url: '/file/upload'
         , done: function (res) {
             flush()
+            layer.closeAll('loading'); //关闭loading
             return layer.msg('上传成功');
         },
         before: function (){
             this.data = {
                 "path": folderPath
             }
+            layer.load(); //上传loading
         },
         error: function (e) {
             console.log(e)
+            layer.closeAll('loading'); //关闭loading
             return layer.msg('上传失败');
         }
 
