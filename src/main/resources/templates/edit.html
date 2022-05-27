@@ -107,7 +107,7 @@
         // 通过layedit.getContent()方法获得富文本编辑器内容
         $.post("/file/saveEdit", {content: content}, function (e) {
             if (e) {
-                layer.alert("保存成功！", {offset: '150px', icon: 1, title: '提示'});
+                layer.msg("保存成功！");
             }
         });
         //alert(content)

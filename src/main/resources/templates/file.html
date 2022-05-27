@@ -124,7 +124,8 @@
         , url: '/file/upload'
         , done: function (res) {
             flush()
-            layer.closeAll('loading'); //关闭loading
+            layer.closeAll('loading');
+            //关闭loading
             return layer.msg('上传成功');
         },
         before: function (){
