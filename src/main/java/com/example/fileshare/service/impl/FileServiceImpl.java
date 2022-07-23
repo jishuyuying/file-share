@@ -1,12 +1,14 @@
 package com.example.fileshare.service.impl;
 
+import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.fileshare.common.BizException;
 import com.example.fileshare.mapper.EditMapper;
 import com.example.fileshare.mapper.FileMapper;
 import com.example.fileshare.service.IFileService;
-import com.example.fileshare.util.SerializeUtil;
 import com.example.fileshare.vo.EditVo;
 import com.example.fileshare.vo.FileVo;
 import com.example.fileshare.vo.ImgVo;
@@ -212,18 +214,38 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
     @Override
     public int saveEdit(String content) {
         EditVo editVo = new EditVo();
-        editVo.setId(new Date().getTime());
+        editVo.setId(IdUtil.getSnowflake(0,0).nextIdStr());
         editVo.setContent(content);
-        SerializeUtil.serialize(editVo);
+        editVo.setUpdateTime(new Date());
+        //SerializeUtil.serialize(editVo);
         return editMapper.insert(editVo);
     }
 
     @Override
     public EditVo getEdit() {
         LambdaQueryWrapper<EditVo> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.orderByDesc(EditVo::getId).last("limit 1");
+        queryWrapper.orderByDesc(EditVo::getUpdateTime).last("limit 1");
         final EditVo editVo = editMapper.selectOne(queryWrapper);
-        return Objects.isNull(editVo) ? SerializeUtil.deserialize(EditVo.class) : editVo;
+        return Objects.isNull(editVo) ? new EditVo() : editVo;
+    }
+
+    @Override
+    public List<EditVo> listEdit() {
+        LambdaQueryWrapper<EditVo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByDesc(EditVo::getUpdateTime);
+        return editMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public IPage<EditVo> pageEdit(Long page, Long limit) {
+        LambdaQueryWrapper<EditVo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByDesc(EditVo::getUpdateTime);
+        return editMapper.selectPage(new Page<>(page, limit), queryWrapper);
+    }
+
+    @Override
+    public void removeEdit(String id) {
+        editMapper.deleteById(id);
     }
 
     private boolean checkFileExisted(String filePath, String directoryName) {

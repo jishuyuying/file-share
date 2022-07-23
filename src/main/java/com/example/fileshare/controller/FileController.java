@@ -1,5 +1,6 @@
 package com.example.fileshare.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.fileshare.common.Result;
 import com.example.fileshare.service.IFileService;
 import com.example.fileshare.vo.EditVo;
@@ -82,6 +83,24 @@ public class FileController {
     @GetMapping("/getEdit")
     public Result<EditVo> getEdit(){
         return Result.success(fileService.getEdit());
+    }
+
+
+    @GetMapping("/listEdit")
+    public Result<List<EditVo>> listEdit(){
+        return Result.success(fileService.listEdit());
+    }
+
+
+    @GetMapping("/pageEdit")
+    public Result<IPage<EditVo>> pageEdit(Long page, Long limit){
+        return Result.success(fileService.pageEdit(page , limit));
+    }
+
+
+    @GetMapping("/remove/{id}")
+    public void remove(@PathVariable String id){
+        fileService.removeEdit(id);
     }
 
 }

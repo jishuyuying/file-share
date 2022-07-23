@@ -1,8 +1,7 @@
 package com.example.fileshare.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.fileshare.mapper.FileMapper;
 import com.example.fileshare.vo.EditVo;
 import com.example.fileshare.vo.FileVo;
 import com.example.fileshare.vo.ImgVo;
@@ -39,4 +38,14 @@ public interface IFileService extends IService<FileVo> {
     int saveEdit(String content);
 
     EditVo getEdit();
+
+    List<EditVo> listEdit();
+
+
+    IPage<EditVo> pageEdit(Long page, Long limit);
+
+
+    void removeEdit(String id);
+
+
 }
