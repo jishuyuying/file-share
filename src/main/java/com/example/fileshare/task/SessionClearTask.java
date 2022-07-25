@@ -25,7 +25,7 @@ public class SessionClearTask {
      * 每 10s 执行一次
      */
     @Scheduled(cron = "*/10 * * * * ?")
-    private void configureTasks() {
+    public void configureTasks() {
         final ConcurrentMap<String, OnlineUser> userPool = SessionManager.getUserPool();
         for (Map.Entry<String, OnlineUser> entry : userPool.entrySet()) {
             if (Objects.nonNull(entry.getValue())) {
