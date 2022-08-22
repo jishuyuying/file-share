@@ -20,10 +20,10 @@ spring:
     throw-exception-if-no-handler-found: true
 
   datasource:
-    username: postgres
-    password: 123456
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://47.98.179.50:5432/file_share
+    username: root
+    password: admin@2022
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://139.159.180.237:3306/file_share
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       register-mbeans: true
@@ -46,4 +46,4 @@ logging:
     com.space.freereport.mapper: debug
 
 file-share:
-  # file-path: /Users/zhaojianmin/IdeaProjects/file-share/file
+  file-path: ./file

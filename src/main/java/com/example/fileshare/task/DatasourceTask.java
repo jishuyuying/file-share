@@ -28,7 +28,7 @@ public class DatasourceTask {
     private DataSource dataSource;
 
 
-    @Scheduled(cron = "*/5 * * * * ?")
+    @Scheduled(cron = "*/10 * * * * ?")
     public void configureTasks() throws Exception{
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement("select update_time from t_edit limit 1");

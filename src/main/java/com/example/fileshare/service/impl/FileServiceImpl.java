@@ -56,8 +56,8 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         } else {
             filePath = this.getFilePath();
             file = new File(filePath);
-            if (!file.exists()) {
-                file.mkdir();
+            if (!file.exists() && !file.mkdir()) {
+                log.error("mkdir error");
             }
         }
         File[] files = file.listFiles();
@@ -94,7 +94,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
             }
             res.add(fileVo);
         }
-        return res.stream().sorted(Comparator.comparing(FileVo::getType)).collect(Collectors.toList());
+        return res.stream().sorted(Comparator.comparing(FileVo::getCreateTime).reversed()).collect(Collectors.toList());
     }
 
     @Override
