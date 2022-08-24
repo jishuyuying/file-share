@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.Response;
 
 /**
- * @Author: ZJM
+ * @Author: vague
  * @Date: 2021/8/5 16:10
  * @Description: 全局异常处理类
  */

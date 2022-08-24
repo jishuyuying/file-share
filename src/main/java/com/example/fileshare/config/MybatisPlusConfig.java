@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
  * @author jmz jianminzhao@foxmail.com
  * @since 2022/7/23 12:07
  */
-//@MapperScan("com.example.fileshare.mapper.*")
 @Configuration
 public class MybatisPlusConfig {
 

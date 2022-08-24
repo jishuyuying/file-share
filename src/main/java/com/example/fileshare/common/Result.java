@@ -3,7 +3,7 @@ package com.example.fileshare.common;
 import lombok.Data;
 
 /**
- * @Author: ZJM
+ * @Author: vague
  * @Date: 2021/10/7 18:40
  * @Description: LayUi 返回结果特殊处理
  */
