@@ -1,5 +1,5 @@
 server:
-  port: 9997
+  port: 9999
   tomcat:
     uri-encoding: UTF-8
   max-http-header-size: 10240000
@@ -44,4 +44,4 @@ spring:
 
 file-share:
   # 使用绝对路径
-  file-path: /Users/zhaojianmin/IdeaProjects/example/file-share
+  file-path: F:\zksq\project\java\gitee\file-share
