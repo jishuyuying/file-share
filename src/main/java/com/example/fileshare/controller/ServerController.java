@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
+ * 系统信息
+ *
  * @author jmz jianminzhao@foxmail.com
  * @since 2022/5/3 14:49
  */

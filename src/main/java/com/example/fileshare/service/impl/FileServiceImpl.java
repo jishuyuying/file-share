@@ -94,20 +94,19 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
             }
             res.add(fileVo);
         }
-        return res.stream().sorted(Comparator.comparing(FileVo::getCreateTime).reversed()).collect(Collectors.toList());
+        return res.stream().sorted(Comparator.comparing(FileVo::getCreateTime).reversed()).sorted(Comparator.comparing(FileVo::getType)).collect(Collectors.toList());
     }
 
     @Override
-    public void storeFile(MultipartFile file, String folderPath) throws IOException {
-        String targetPath;
-        if (!StringUtils.hasText(folderPath)) {
+    public void storeFile(MultipartFile file, String targetPath) throws IOException {
+        if (!StringUtils.hasText(targetPath)) {
             targetPath = this.getFilePath();
-        } else {
-            targetPath = folderPath;
+        }else {
+            targetPath = targetPath.replace("\\", "/");
         }
         String filename = file.getOriginalFilename();
         if (!StringUtils.hasText(filename)) {
-            throw new RuntimeException("错误的文件名");
+            filename = UUID.randomUUID().toString();
         }
         FileUtils.copyFile(Objects.requireNonNull(MultipartFileToFile(file)), new File(targetPath, filename));
         FileVo fileVo = this.getFileVo(filename, targetPath);

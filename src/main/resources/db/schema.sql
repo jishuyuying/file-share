@@ -20,5 +20,6 @@ CREATE TABLE t_edit
 (
     id BIGINT(20) NOT NULL COMMENT '主键ID',
     content CLOB NULL DEFAULT NULL COMMENT '内容',
+    update_time TIMESTAMP NULL DEFAULT NULL COMMENT '更新时间',
     PRIMARY KEY (id)
 );
