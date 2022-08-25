@@ -12,6 +12,7 @@ import com.example.fileshare.service.IFileService;
 import com.example.fileshare.vo.EditVo;
 import com.example.fileshare.vo.FileVo;
 import com.example.fileshare.vo.ImgVo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
  * @author jmz jianminzhao@foxmail.com
  * @since 2022/4/29 14:34
  */
+@Slf4j
 @Service
 public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements IFileService {
 
@@ -180,7 +182,8 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
 
     @Override
     public void view(String filePath, HttpServletResponse response) {
-        File file = new File(filePath);
+        log.info(filePath);
+        File file = new File(filePath.replace("\\", File.separator));
         // PDF文件地址
         if (file.exists()) {
             try (FileInputStream input = new FileInputStream(file)) {

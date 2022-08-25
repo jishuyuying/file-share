@@ -200,6 +200,10 @@
 
         let data = obj.data;
 
+        data.filePath = data.filePath.replace("/","\\")
+        console.log(data.filePath)
+
+
         if (obj.event === 'del') {
             removeFile(data)
         } else if (obj.event === 'detail') {
