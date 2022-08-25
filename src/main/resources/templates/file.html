@@ -200,7 +200,7 @@
 
         let data = obj.data;
 
-        data.filePath = data.filePath.replaceAll("/","\\")
+        data.filePath = data.filePath.replace(/\//g,"\\")
         console.log(data.filePath)
 
 
