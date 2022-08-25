@@ -34,7 +34,7 @@ public class ServerController {
 
 
     @GetMapping("/kernel")
-    public List<Disk> getKernelInfo() throws Exception {
+    public List<Disk> getKernelInfo() {
         Server server = new Server();
         server.initDisk();
         return server.getDisk();
@@ -42,20 +42,20 @@ public class ServerController {
 
 
     @GetMapping("/ip")
-    public Result<String> getIp(HttpServletRequest request) throws Exception {
+    public Result<String> getIp(HttpServletRequest request) {
         final String ip = new RequestUtil(request).getIp();
         return Result.success(ip);
     }
 
 
     @GetMapping("/online")
-    public List<OnlineUser> getOnlineUsers() throws Exception {
+    public List<OnlineUser> getOnlineUsers() {
         return SessionManager.getAll();
     }
 
 
     @GetMapping("/sys")
-    public Sys getSys() throws Exception {
+    public Sys getSys() {
         Server server = new Server();
         server.initSysInfo();
         return server.getSys();
