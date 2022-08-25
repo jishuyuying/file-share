@@ -1,9 +1,7 @@
 package com.example.fileshare.common;
 
 /**
- * @Author: vague
- * @Date: 2021/9/30 15:36
- * @Description:
+ * @author vague 2021/9/30 15:36
  */
 public class BizException extends RuntimeException {
 
@@ -13,6 +11,7 @@ public class BizException extends RuntimeException {
      * 错误码
      */
     protected int errorCode;
+
     /**
      * 错误信息
      */

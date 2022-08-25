@@ -34,8 +34,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author jmz jianminzhao@foxmail.com
- * @since 2022/4/29 14:34
+ * @author vague 2022/4/29 14:34
  */
 @Slf4j
 @Service
@@ -103,7 +102,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
     public void storeFile(MultipartFile file, String targetPath) throws IOException {
         if (!StringUtils.hasText(targetPath)) {
             targetPath = this.getFilePath();
-        }else {
+        } else {
             targetPath = targetPath.replace("\\", "/");
         }
         String filename = file.getOriginalFilename();
@@ -147,30 +146,31 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
 
     @Override
     public String removeFile(FileVo fileVo) {
-        if (Objects.nonNull(fileVo)) {
-            if (StringUtils.hasText(fileVo.getFilePath())) {
-                File file = new File(fileVo.getFilePath());
-                if (file.exists() && file.isDirectory()) {
-                    final File[] files = file.listFiles();
-                    if (Objects.nonNull(files)) {
-                        for (File tFile : files) {
-                            if (tFile.getName().equals(fileVo.getFileName())) {
-                                if ((TYPE_FILE == fileVo.getType() && tFile.isFile())) {
-                                    if (tFile.delete()) {
-                                        LambdaQueryWrapper<FileVo> queryWrapper = new LambdaQueryWrapper<>();
-                                        queryWrapper.eq(FileVo::getFilePath, fileVo.getFilePath());
-                                        queryWrapper.eq(FileVo::getFileName, fileVo.getFileName());
-                                        this.remove(queryWrapper);
-                                        return "删除成功";
-                                    }
-                                    return "删除失败";
-                                } else if (TYPE_FOLDER == fileVo.getType() && tFile.isDirectory()) {
-                                    // 文件夹递归删除
-                                    if (delFiles(tFile)) {
-                                        return "删除成功";
-                                    }
-                                    return "删除失败";
+        if (Objects.nonNull(fileVo) && StringUtils.hasText(fileVo.getFilePath())) {
+            File file = new File(fileVo.getFilePath());
+            if (file.exists() && file.isDirectory()) {
+                final File[] files = file.listFiles();
+                if (Objects.nonNull(files)) {
+                    for (File tFile : files) {
+                        if (tFile.getName().equals(fileVo.getFileName())) {
+                            if ((TYPE_FILE == fileVo.getType() && tFile.isFile())) {
+                                try {
+                                    Files.delete(tFile.toPath());
+                                    LambdaQueryWrapper<FileVo> queryWrapper = new LambdaQueryWrapper<>();
+                                    queryWrapper.eq(FileVo::getFilePath, fileVo.getFilePath());
+                                    queryWrapper.eq(FileVo::getFileName, fileVo.getFileName());
+                                    this.remove(queryWrapper);
+                                    return "删除成功";
+                                } catch (IOException ioException) {
+                                    ioException.printStackTrace();
                                 }
+                                return "删除失败";
+                            } else if (TYPE_FOLDER == fileVo.getType() && tFile.isDirectory()) {
+                                // 文件夹递归删除
+                                if (delFiles(tFile)) {
+                                    return "删除成功";
+                                }
+                                return "删除失败";
                             }
                         }
                     }
@@ -188,7 +188,8 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         if (file.exists()) {
             try (FileInputStream input = new FileInputStream(file)) {
                 byte[] data = new byte[input.available()];
-                input.read(data);
+                int read = input.read(data);
+                log.info("{}", read);
                 response.getOutputStream().write(data);
             } catch (Exception e) {
                 // do nothing
@@ -216,7 +217,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
     @Override
     public int saveEdit(String content) {
         EditVo editVo = new EditVo();
-        editVo.setId(IdUtil.getSnowflake(0,0).nextIdStr());
+        editVo.setId(IdUtil.getSnowflake(0, 0).nextIdStr());
         editVo.setContent(content);
         editVo.setUpdateTime(new Date());
         //SerializeUtil.serialize(editVo);

@@ -10,8 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 
 /**
- * @author jmz jianminzhao@foxmail.com
- * @since 5/5/2022 下午 5:56
+ * @author vague 5/5/2022 下午 5:56
  */
 @Data
 @Accessors(chain = true)

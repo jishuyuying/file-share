@@ -2,7 +2,6 @@ package com.example.fileshare.handler;
 
 import com.example.fileshare.common.BizException;
 import com.example.fileshare.common.Result;
-import com.example.fileshare.util.RequestUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,12 +17,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.ws.Response;
 
 /**
- * @Author: vague
- * @Date: 2021/8/5 16:10
- * @Description: 全局异常处理类
+ * 全局异常处理类
+ *
+ * @author vague 2021/8/5 16:10
  */
 @Slf4j
 @RestControllerAdvice
@@ -35,9 +33,9 @@ public class GlobalExceptionHandler {
     /**
      * 处理自定义的业务异常
      *
-     * @param req
-     * @param e
-     * @return
+     * @param req /
+     * @param e /
+     * @return /
      */
     @ExceptionHandler(value = BizException.class)
     @ResponseBody
@@ -84,7 +82,6 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     public Result<String> noHandlerFoundExceptionHandler(HttpServletRequest request, NoHandlerFoundException e) {
-        //log.error("BAD_REQUEST|{}|{}: {}|{}", null != request ? request.getRequestURI() : "", e.getClass().getSimpleName(), e.getMessage(), null != request ? new RequestUtil(request).getIp() : "");
         return Result.failure(404, "页面不存在");
     }
 

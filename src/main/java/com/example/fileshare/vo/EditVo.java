@@ -11,8 +11,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author jmz jianminzhao@foxmail.com
- * @since 2022/5/2 19:20
+ * @author vague 2022/5/2 19:20
  */
 @Data
 @NoArgsConstructor

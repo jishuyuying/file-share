@@ -8,8 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @author jmz jianminzhao@foxmail.com
- * @since 2022/4/29 16:01
+ * @author vague 2022/4/29 16:01
  */
 @Data
 @NoArgsConstructor

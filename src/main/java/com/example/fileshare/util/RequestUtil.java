@@ -7,8 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * @author jmz jianminzhao@foxmail.com
- * @since 5/5/2022 下午 2:03
+ * @author vague 5/5/2022 下午 2:03
  */
 public class RequestUtil {
 

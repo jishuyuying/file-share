@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class Sys {
+
     /**
      * 服务器名称
      */

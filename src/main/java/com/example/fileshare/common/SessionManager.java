@@ -9,8 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * @author jmz jianminzhao@foxmail.com
- * @since 6/5/2022 上午 9:25
+ * @author vague 6/5/2022 上午 9:25
  */
 @Data
 public class SessionManager {

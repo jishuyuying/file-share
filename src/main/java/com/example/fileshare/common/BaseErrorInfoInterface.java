@@ -1,21 +1,20 @@
 package com.example.fileshare.common;
 
 /**
- * @Author: vague
- * @Date: 2021/9/30 15:34
- * @Description:
+ * @author vague 2021/9/30 15:34
  */
 public interface BaseErrorInfoInterface {
 
     /**
      * 错误码
-     * @return
+     * @return code
      */
     int getResultCode();
 
     /**
      * 错误描述
-     * @return
+     * @return message
      */
     String getResultMsg();
+
 }

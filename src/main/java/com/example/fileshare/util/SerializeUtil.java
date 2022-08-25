@@ -5,8 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.*;
 
 /**
- * @author jmz jianminzhao@foxmail.com
- * @since 7/5/2022 下午 3:52
+ * @author vague 7/5/2022 下午 3:52
  */
 @Slf4j
 public class SerializeUtil {

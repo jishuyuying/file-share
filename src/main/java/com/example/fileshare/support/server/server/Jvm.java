@@ -9,6 +9,7 @@ import java.lang.management.ManagementFactory;
 
 @Data
 public class Jvm {
+
     /**
      * 当前JVM占用的内存总数(M)
      */

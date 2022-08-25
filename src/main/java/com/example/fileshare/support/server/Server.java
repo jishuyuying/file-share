@@ -142,12 +142,12 @@ public class Server {
      * 设置服务器信息
      */
     public void initSysInfo() {
-        if(sys == null){
+        if (sys == null) {
             sys = new Sys();
         }
 //        InetAddress ia = InetAddress.getLocalHost();
         InetAddress ia = getLocalHostExactAddress();
-        if(Objects.nonNull(ia)){
+        if (Objects.nonNull(ia)) {
             String computerIp = ia.getHostAddress();
             String computerName = ia.getHostName();
             sys.setComputerName(computerName);
@@ -163,6 +163,7 @@ public class Server {
 
     /**
      * 取代 InetAddress.getLocalHost()
+     *
      * @return
      */
     public static InetAddress getLocalHostExactAddress() {
@@ -259,13 +260,10 @@ public class Server {
     }
 
 
-
-
     public void initDisk() {
         SystemInfo si = new SystemInfo();
         setDisk(si.getOperatingSystem());
     }
-
 
 
 }

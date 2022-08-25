@@ -11,9 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 
 /**
- * @Author: vague
- * @Date: 2021/8/5 15:32
- * @Description:
+ * @author vague 2021/8/5 15:32
  */
 @ControllerAdvice
 public class ResponseResultHandler implements ResponseBodyAdvice<Object> {
@@ -22,9 +20,9 @@ public class ResponseResultHandler implements ResponseBodyAdvice<Object> {
     /**
      * 判断是否要执行 beforeBodyWrite 方法，true为执行
      *
-     * @param methodParameter
-     * @param clazz
-     * @return
+     * @param methodParameter /
+     * @param clazz /
+     * @return /
      */
     @Override
     public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> clazz) {
@@ -34,13 +32,13 @@ public class ResponseResultHandler implements ResponseBodyAdvice<Object> {
     /**
      * 对返回值做包装处理
      *
-     * @param body
-     * @param methodParameter
-     * @param mediaType
-     * @param clazz
-     * @param serverHttpRequest
-     * @param serverHttpResponse
-     * @return
+     * @param body /
+     * @param methodParameter /
+     * @param mediaType /
+     * @param clazz /
+     * @param serverHttpRequest /
+     * @param serverHttpResponse /
+     * @return /
      */
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter methodParameter, MediaType mediaType,
@@ -51,4 +49,5 @@ public class ResponseResultHandler implements ResponseBodyAdvice<Object> {
         }
         return Result.success("success", body);
     }
+
 }

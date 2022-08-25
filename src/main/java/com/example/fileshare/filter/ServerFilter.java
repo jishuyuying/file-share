@@ -13,10 +13,8 @@ import java.io.IOException;
 import java.util.Date;
 
 /**
- * @author jmz jianminzhao@foxmail.com
- * @since 5/5/2022 下午 2:01
+ * @author vague 5/5/2022 下午 2:01
  */
-
 @Slf4j
 @Component
 @WebFilter(urlPatterns = {"/**"}, filterName = "tokenAuthorFilter")
@@ -32,9 +30,7 @@ public class ServerFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest httpRequest = (HttpServletRequest) request;
         String ip = new RequestUtil(httpRequest).getIp();
-        //final String sessionId = httpRequest.getSession().getId();
         SessionManager.add(ip, new OnlineUser(ip, new Date()));
-        // log.info(ip);
         // 到下一个链
         chain.doFilter(request, response);
     }

@@ -8,8 +8,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * @author jmz jianminzhao@foxmail.com
- * @since 2022/5/2 10:20
+ * @author vague 2022/5/2 10:20
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -36,7 +35,7 @@ public class WebConfig implements WebMvcConfigurer {
      * java.lang.IllegalArgumentException:
      * Invalid character found in the request target. The valid characters are defined in RFC 7230 and RFC 3986
      *
-     * @return
+     * @return /
      */
     @Bean
     public ConfigurableServletWebServerFactory webServerFactory() {

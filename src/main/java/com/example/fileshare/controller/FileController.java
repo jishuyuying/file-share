@@ -16,8 +16,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * @author jmz jianminzhao@foxmail.com
- * @since 2022/4/29 14:32
+ * @author vague 2022/4/29 14:32
  */
 @RestController
 @RequestMapping("/file")
@@ -30,9 +29,9 @@ public class FileController {
 
     /**
      * 文件上传
-     * @param file
-     * @param path
-     * @return
+     * @param file /
+     * @param path /
+     * @return /
      */
     @PostMapping("/upload")
     public Result<String> upload(MultipartFile file, String path) {
@@ -48,8 +47,8 @@ public class FileController {
 
     /**
      * 图片上传
-     * @param file
-     * @return
+     * @param file /
+     * @return /
      */
     @PostMapping("/img/upload")
     public Result<ImgVo> uploadImg(MultipartFile file) {
@@ -64,8 +63,8 @@ public class FileController {
 
     /**
      * 列出文件及文件夹
-     * @param folderPath
-     * @return
+     * @param folderPath /
+     * @return /
      */
     @GetMapping("/searchFolder")
     public Result<List<FileVo>> searchFolder(String folderPath){
@@ -75,9 +74,9 @@ public class FileController {
 
     /**
      * 新建文件夹
-     * @param filePath
-     * @param directoryName
-     * @return
+     * @param filePath /
+     * @param directoryName /
+     * @return /
      */
     @GetMapping("/createDirectory")
     public Result<String> createDirectory(String filePath, String directoryName){
@@ -87,8 +86,8 @@ public class FileController {
 
     /**
      * 文件预览
-     * @param filePath
-     * @param response
+     * @param filePath /
+     * @param response /
      */
     @GetMapping("/view")
     public void view(String filePath, HttpServletResponse response){
@@ -98,8 +97,8 @@ public class FileController {
 
     /**
      * 删除文件
-     * @param fileVo
-     * @return
+     * @param fileVo /
+     * @return /
      */
     @PostMapping("/removeFile")
     public Result<String> removeFile(@RequestBody FileVo fileVo){
@@ -109,8 +108,8 @@ public class FileController {
 
     /**
      * 保存文本修改
-     * @param content
-     * @return
+     * @param content /
+     * @return /
      */
     @PostMapping("/saveEdit")
     public Result<String> saveEdit(String content){
@@ -120,7 +119,7 @@ public class FileController {
 
     /**
      * 获取文本
-     * @return
+     * @return /
      */
     @GetMapping("/getEdit")
     public Result<EditVo> getEdit(){
@@ -130,7 +129,7 @@ public class FileController {
 
     /**
      * 查询历史文本
-     * @return
+     * @return /
      */
     @GetMapping("/listEdit")
     public Result<List<EditVo>> listEdit(){
@@ -140,8 +139,8 @@ public class FileController {
 
     /**
      * 分页查询历史文本
-     * @param page
-     * @param limit
+     * @param page /
+     * @param limit /
      * @return
      */
     @GetMapping("/pageEdit")
@@ -152,7 +151,7 @@ public class FileController {
 
     /**
      * 删除文本记录
-     * @param id
+     * @param id /
      */
     @GetMapping("/remove/{id}")
     public void remove(@PathVariable String id){

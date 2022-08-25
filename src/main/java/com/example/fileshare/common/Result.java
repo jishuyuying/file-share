@@ -3,9 +3,9 @@ package com.example.fileshare.common;
 import lombok.Data;
 
 /**
- * @Author: vague
- * @Date: 2021/10/7 18:40
- * @Description: LayUi 返回结果特殊处理
+ * LayUi 返回结果特殊处理
+ *
+ * @author vague 2021/10/7 18:40
  */
 @Data
 public class Result<T> {
@@ -79,7 +79,6 @@ public class Result<T> {
     }
 
 
-
     public static <T> Result<T> failure() {
         return failure(500, "failure");
     }
@@ -89,7 +88,7 @@ public class Result<T> {
     }
 
     public static <T> Result<T> failure(T data) {
-        return failure(500,"failure",data);
+        return failure(500, "failure", data);
     }
 
     public static <T> Result<T> failure(int code, String msg) {
