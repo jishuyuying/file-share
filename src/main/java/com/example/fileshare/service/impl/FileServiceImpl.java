@@ -103,26 +103,15 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         if (!StringUtils.hasText(targetPath)) {
             targetPath = this.getFilePath();
         } else {
-            targetPath = targetPath.replace("\\", "/");
+            targetPath = targetPath.replace("\\", File.separator);
         }
         String filename = file.getOriginalFilename();
         if (!StringUtils.hasText(filename)) {
             filename = UUID.randomUUID().toString();
         }
         FileUtils.copyFile(Objects.requireNonNull(MultipartFileToFile(file)), new File(targetPath, filename));
-        FileVo fileVo = this.getFileVo(filename, targetPath);
-        this.save(fileVo);
     }
 
-    private FileVo getFileVo(String filename, String targetPath) {
-        FileVo fileVo = new FileVo();
-        fileVo.setFileName(filename);
-        fileVo.setFilePath(targetPath);
-        fileVo.setCreateTime(getCreateTime());
-        fileVo.setType(TYPE_FILE);
-        fileVo.setId(new Date().getTime());
-        return fileVo;
-    }
 
     @Override
     public String createDirectory(String filePath, String directoryName) {
@@ -147,6 +136,8 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
     @Override
     public String removeFile(FileVo fileVo) {
         if (Objects.nonNull(fileVo) && StringUtils.hasText(fileVo.getFilePath())) {
+            log.info("fileVo:{}", fileVo);
+            fileVo.setFilePath(fileVo.getFilePath().replace("\\", File.separator));
             File file = new File(fileVo.getFilePath());
             if (file.exists() && file.isDirectory()) {
                 final File[] files = file.listFiles();
@@ -156,10 +147,6 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
                             if ((TYPE_FILE == fileVo.getType() && tFile.isFile())) {
                                 try {
                                     Files.delete(tFile.toPath());
-                                    LambdaQueryWrapper<FileVo> queryWrapper = new LambdaQueryWrapper<>();
-                                    queryWrapper.eq(FileVo::getFilePath, fileVo.getFilePath());
-                                    queryWrapper.eq(FileVo::getFileName, fileVo.getFileName());
-                                    this.remove(queryWrapper);
                                     return "删除成功";
                                 } catch (IOException ioException) {
                                     ioException.printStackTrace();
@@ -175,6 +162,8 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
                         }
                     }
                 }
+            }else {
+                log.error("file nonexistence");
             }
         }
         return "删除失败";
@@ -206,8 +195,6 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
             throw new BizException("错误的文件名");
         }
         FileUtils.copyFile(Objects.requireNonNull(MultipartFileToFile(file)), new File(targetPath, filename));
-        FileVo fileVo = this.getFileVo(filename, targetPath);
-        this.save(fileVo);
         ImgVo imgVo = new ImgVo();
         imgVo.setSrc("/file/view?filePath=" + targetPath + File.separatorChar + filename);
         imgVo.setTitle(filename);
@@ -262,8 +249,8 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
     /**
      * 将MultipartFile转换为File
      *
-     * @param multiFile
-     * @return
+     * @param multiFile /
+     * @return /
      */
     public static File MultipartFileToFile(MultipartFile multiFile) {
         // 获取文件名
@@ -292,9 +279,9 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
 
     private String getFilePath() {
         if (StringUtils.hasText(fileRootPath)) {
-            return fileRootPath + "/file";
+            return fileRootPath + File.separator + "file";
         }
-        return System.getProperty("user.dir") + "/file";
+        return System.getProperty("user.dir") + File.separator + "file";
     }
 
 
@@ -305,23 +292,23 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
      * @return 删除结果
      */
     public static boolean delFiles(File file) {
-        boolean result = false;
         if (file.isDirectory()) {
             File[] childrenFiles = file.listFiles();
             if (childrenFiles != null) {
                 for (File childFile : childrenFiles) {
-                    result = delFiles(childFile);
-                    if (!result) {
+                    if (!delFiles(childFile)) {
                         return false;
                     }
                 }
             }
-
         }
         //删除文件、空目录
-        result = file.delete();
-        //TODO 删除数据库记录
-        return result;
+        try {
+            Files.delete(file.toPath());
+            return true;
+        }catch (IOException e){
+            return false;
+        }
     }
 
 
