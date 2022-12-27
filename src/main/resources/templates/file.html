@@ -98,7 +98,7 @@
 <!--操作-->
 <script type="text/html" th:inline="none" id="barDemo">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">预览</a>
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <!--    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
@@ -128,7 +128,7 @@
             //关闭loading
             return layer.msg('上传成功');
         },
-        before: function (){
+        before: function () {
             this.data = {
                 "path": folderPath
             }
@@ -139,7 +139,6 @@
             layer.closeAll('loading'); //关闭loading
             return layer.msg('上传失败');
         }
-
 
     });
 
@@ -178,12 +177,10 @@
             {
                 width: '20%', title: '操作', align: 'left', templet: function (d) {//对每列数据进行处理后展示
                     if (d.type === 1) {
-                        return '<button type="button" class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></button>' +
-                            '<button type="button" class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon layui-icon-delete"></i></button>'
+                        return '<button type="button" class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon layui-icon-delete"></i></button>'
                     } else {
                         return '<button type="button" class="layui-btn layui-btn-xs layui-btn-primary" lay-event="download"><i class="layui-icon layui-icon-download-circle"></i></button>' +
                             '<button type="button" class="layui-btn layui-btn-xs" lay-event="detail"><i class="layui-icon layui-icon-play"></i></button>' +
-                            '<button type="button" class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></button>' +
                             '<button type="button" class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon layui-icon-delete"></i></button>'
                     }
                 }
@@ -200,12 +197,23 @@
 
         let data = obj.data;
 
-        data.filePath = data.filePath.replace(/\//g,"\\")
+        data.filePath = data.filePath.replace(/\//g, "\\")
         console.log(data.filePath)
 
 
         if (obj.event === 'del') {
-            removeFile(data)
+            //询问框
+            layer.confirm('是否删除当前文件或文件夹？', {
+                title: "删除提示",
+                icon: 2,
+                btn: ['确定', '取消'] //按钮
+            }, function () {
+                removeFile(data)
+                return false;
+            }, function () {
+                layer.closeAll();
+            });
+
         } else if (obj.event === 'detail') {
             if (data.fileName.indexOf(".pdf") !== -1) {
                 viewFile(data)

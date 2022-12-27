@@ -12,6 +12,7 @@ import com.example.fileshare.service.IFileService;
 import com.example.fileshare.vo.EditVo;
 import com.example.fileshare.vo.FileVo;
 import com.example.fileshare.vo.ImgVo;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.BeanUtils;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 /**
  * @author vague 2022/4/29 14:34
  */
+@RequiredArgsConstructor
 @Slf4j
 @Service
 public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements IFileService {
@@ -43,9 +45,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
     @Value("${file-share.file-path:#{null}}")
     private String fileRootPath;
 
-
-    @Autowired
-    private EditMapper editMapper;
+    private final EditMapper editMapper;
 
     @Override
     public List<FileVo> searchFolder(String folderPath) {
@@ -65,16 +65,9 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         if (Objects.isNull(files)) {
             return Collections.emptyList();
         }
-        List<FileVo> list = this.listByFolderPath(filePath);
         List<FileVo> res = new ArrayList<>();
         for (File tFile : files) {
             FileVo fileVo = new FileVo();
-            for (FileVo vo : list) {
-                if (vo.getFileName().equals(tFile.getName())) {
-                    BeanUtils.copyProperties(vo, fileVo);
-                    break;
-                }
-            }
             fileVo.setFileName(tFile.getName());
             if (tFile.isDirectory()) {
                 fileVo.setType(TYPE_FOLDER);
@@ -109,7 +102,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         if (!StringUtils.hasText(filename)) {
             filename = UUID.randomUUID().toString();
         }
-        FileUtils.copyFile(Objects.requireNonNull(MultipartFileToFile(file)), new File(targetPath, filename));
+        FileUtils.copyFile(Objects.requireNonNull(multipartFileToFile(file)), new File(targetPath, filename));
     }
 
 
@@ -162,7 +155,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
                         }
                     }
                 }
-            }else {
+            } else {
                 log.error("file nonexistence");
             }
         }
@@ -194,7 +187,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         if (!StringUtils.hasText(filename)) {
             throw new BizException("错误的文件名");
         }
-        FileUtils.copyFile(Objects.requireNonNull(MultipartFileToFile(file)), new File(targetPath, filename));
+        FileUtils.copyFile(Objects.requireNonNull(multipartFileToFile(file)), new File(targetPath, filename));
         ImgVo imgVo = new ImgVo();
         imgVo.setSrc("/file/view?filePath=" + targetPath + File.separatorChar + filename);
         imgVo.setTitle(filename);
@@ -252,7 +245,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
      * @param multiFile /
      * @return /
      */
-    public static File MultipartFileToFile(MultipartFile multiFile) {
+    public static File multipartFileToFile(MultipartFile multiFile) {
         // 获取文件名
         String fileName = multiFile.getOriginalFilename();
         // 获取文件后缀
@@ -269,12 +262,6 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         return null;
     }
 
-
-    private List<FileVo> listByFolderPath(String fileRootPath) {
-        LambdaQueryWrapper<FileVo> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(FileVo::getFilePath, fileRootPath);
-        return this.list(lambdaQueryWrapper);
-    }
 
 
     private String getFilePath() {
@@ -306,7 +293,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         try {
             Files.delete(file.toPath());
             return true;
-        }catch (IOException e){
+        } catch (IOException e) {
             return false;
         }
     }

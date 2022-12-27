@@ -15,7 +15,6 @@ import oshi.util.Util;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.UnknownHostException;
 import java.util.*;
 
 /**
@@ -94,13 +93,12 @@ public class Server {
         this.disk = disk;
     }
 
-    public void copyTo() throws Exception {
+    public void copyTo() {
         SystemInfo si = new SystemInfo();
         HardwareAbstractionLayer hal = si.getHardware();
         setDisk(si.getOperatingSystem());
         setCpuInfo(hal.getProcessor());
         setMemInfo(hal.getMemory());
-        //initSysInfo();
         setJvmInfo();
     }
 
@@ -114,18 +112,18 @@ public class Server {
         long[] ticks = processor.getSystemCpuLoadTicks();
         long nice = ticks[TickType.NICE.getIndex()] - prevTicks[TickType.NICE.getIndex()];
         long irq = ticks[TickType.IRQ.getIndex()] - prevTicks[TickType.IRQ.getIndex()];
-        long softirq = ticks[TickType.SOFTIRQ.getIndex()] - prevTicks[TickType.SOFTIRQ.getIndex()];
+        long softer = ticks[TickType.SOFTIRQ.getIndex()] - prevTicks[TickType.SOFTIRQ.getIndex()];
         long steal = ticks[TickType.STEAL.getIndex()] - prevTicks[TickType.STEAL.getIndex()];
         long cSys = ticks[TickType.SYSTEM.getIndex()] - prevTicks[TickType.SYSTEM.getIndex()];
         long user = ticks[TickType.USER.getIndex()] - prevTicks[TickType.USER.getIndex()];
-        long iowait = ticks[TickType.IOWAIT.getIndex()] - prevTicks[TickType.IOWAIT.getIndex()];
+        long nowait = ticks[TickType.IOWAIT.getIndex()] - prevTicks[TickType.IOWAIT.getIndex()];
         long idle = ticks[TickType.IDLE.getIndex()] - prevTicks[TickType.IDLE.getIndex()];
-        long totalCpu = user + nice + cSys + idle + iowait + irq + softirq + steal;
+        long totalCpu = user + nice + cSys + idle + nowait + irq + softer + steal;
         cpu.setCpuNum(processor.getLogicalProcessorCount());
         cpu.setTotal(totalCpu);
         cpu.setSys(cSys);
         cpu.setUsed(user);
-        cpu.setWait(iowait);
+        cpu.setWait(nowait);
         cpu.setFree(idle);
     }
 
@@ -145,7 +143,6 @@ public class Server {
         if (sys == null) {
             sys = new Sys();
         }
-//        InetAddress ia = InetAddress.getLocalHost();
         InetAddress ia = getLocalHostExactAddress();
         if (Objects.nonNull(ia)) {
             String computerIp = ia.getHostAddress();
@@ -164,7 +161,7 @@ public class Server {
     /**
      * 取代 InetAddress.getLocalHost()
      *
-     * @return
+     * @return /
      */
     public static InetAddress getLocalHostExactAddress() {
         try {
@@ -176,7 +173,7 @@ public class Server {
                 // 该网卡接口下的ip会有多个，也需要一个个的遍历，找到自己所需要的
                 for (Enumeration<InetAddress> inetAdders = face.getInetAddresses(); inetAdders.hasMoreElements(); ) {
                     InetAddress inetAdder = inetAdders.nextElement();
-                    // 排除loopback回环类型地址（不管是IPv4还是IPv6 只要是回环地址都会返回true）
+                    // 排除loopBack回环类型地址（不管是IPv4还是IPv6 只要是回环地址都会返回true）
                     if (!inetAdder.isLoopbackAddress()) {
                         if (inetAdder.isSiteLocalAddress()) {
                             // 如果是site-local地址，就是它了 就是我们要找的
@@ -193,7 +190,7 @@ public class Server {
                 }
             }
 
-            // 如果出去loopback回环地之外无其它地址了，那就回退到原始方案吧
+            // 如果出去loopBack回环地之外无其它地址了，那就回退到原始方案吧
             return candidateAddress == null ? InetAddress.getLocalHost() : candidateAddress;
         } catch (Exception e) {
             e.printStackTrace();
@@ -205,7 +202,7 @@ public class Server {
     /**
      * 设置Java虚拟机
      */
-    private void setJvmInfo() throws UnknownHostException {
+    private void setJvmInfo() {
         Properties props = System.getProperties();
         jvm.setTotal(Runtime.getRuntime().totalMemory());
         jvm.setMax(Runtime.getRuntime().maxMemory());

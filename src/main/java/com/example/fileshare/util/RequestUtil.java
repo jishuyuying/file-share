@@ -1,9 +1,7 @@
 package com.example.fileshare.util;
 
-import org.springframework.stereotype.Component;
-
-import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 
 
 /**

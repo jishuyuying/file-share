@@ -6,8 +6,8 @@ import com.example.fileshare.service.IFileService;
 import com.example.fileshare.vo.EditVo;
 import com.example.fileshare.vo.FileVo;
 import com.example.fileshare.vo.ImgVo;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,13 +18,13 @@ import java.util.List;
 /**
  * @author vague 2022/4/29 14:32
  */
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/file")
 @Slf4j
 public class FileController {
 
-    @Autowired
-    private IFileService fileService;
+    private final IFileService fileService;
 
 
     /**
@@ -41,7 +41,6 @@ public class FileController {
         }catch (IOException e){
             return Result.failure(e.getMessage());
         }
-
     }
 
 
@@ -141,7 +140,7 @@ public class FileController {
      * 分页查询历史文本
      * @param page /
      * @param limit /
-     * @return
+     * @return /
      */
     @GetMapping("/pageEdit")
     public Result<IPage<EditVo>> pageEdit(Long page, Long limit){

@@ -63,75 +63,6 @@
 
         <div class="layui-container">
 
-            <div class="layui-row top-30" v-show="openOther">
-                <div class="layui-col-md6 layui-col-md-offset3">
-
-                    <div class="layui-collapse">
-                        <div class="layui-colla-item">
-                            <h2 class="layui-colla-title">主机信息</h2>
-                            <div class="layui-colla-content">
-
-                                <table class="layui-table">
-                                    <colgroup>
-                                        <col width="150">
-                                        <col width="200">
-                                        <col>
-                                    </colgroup>
-                                    <thead>
-                                    <tr>
-                                        <th>属性</th>
-                                        <th>值</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>名称</td>
-                                        <td>{{sys.computerName}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>地址</td>
-                                        <td>{{sys.computerIp}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>系统</td>
-                                        <td>{{sys.osName}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>模型</td>
-                                        <td>{{sys.osArch}}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-
-            <div class="layui-row top-30" v-show="openOther">
-                <form class="layui-form" action="">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">自动刷新</label>
-                        <div class="layui-input-block">
-                            <input type="checkbox" name="close" lay-skin="switch" :checked="checkedState"
-                                   lay-filter="switchTest" lay-text="ON|OFF">
-                        </div>
-                    </div>
-                    <!--                    <div class="layui-form-item">-->
-                    <!--                        <div class="layui-progress" lay-showpercent="true" lay-filter="progress-demo">-->
-                    <!--                            <div class="layui-progress-bar layui-bg-blue" lay-percent="0%"></div>-->
-                    <!--                        </div>-->
-                    <!--                    </div>-->
-                </form>
-
-            </div>
-
-
             <div class="layui-row layui-col-space15 top-30">
                 <div class="layui-col-md3">
                     <div class="layui-panel self-panel">
@@ -319,8 +250,7 @@
             },
             timer: null,
             progressTimer:null,
-            checkedState: false,
-            openOther: false
+            checkedState: false
         },
         methods: {
             initTable() {
@@ -396,17 +326,7 @@
 
             },
             loadProgress() {
-                // let element = layui.element;
-                // //模拟loading
-                // let n = 0;
-                // this.progressTimer = setInterval(function () {
-                //     n = n + 1;
-                //     if (n > 100) {
-                //         n = 0;
-                //         //clearInterval( this.progressTimer);
-                //     }
-                //     element.progress('progress-demo', n + '%');
-                // }, 100);
+
             },
             resetTimer(tableIndex) {
                 const that = this;
