@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentMap;
@@ -29,7 +28,7 @@ public class SessionClearTask {
         for (Map.Entry<String, OnlineUser> entry : userPool.entrySet()) {
             if (Objects.nonNull(entry.getValue())) {
                 //结束时间 转为 Long 类型
-                long end = new Date().getTime();
+                long end = System.currentTimeMillis();
                 // 时间差 = 结束时间 - 开始时间，这样得到的差值是毫秒级别
                 long timeLag = end - entry.getValue().getLastLoginTime().getTime();
                 //天
@@ -38,7 +37,7 @@ public class SessionClearTask {
                 long hour = (timeLag / (60 * 60 * 1000) - day * 24);
                 //分钟
                 long minute = ((timeLag / (60 * 1000)) - day * 24 * 60 - hour * 60);
-                if (minute >= 5) {
+                if (minute >= 30) {
                     log.info("用户ip:{} 已过期", entry.getValue().getIp());
                     SessionManager.remove(entry.getValue().getIp());
                 }

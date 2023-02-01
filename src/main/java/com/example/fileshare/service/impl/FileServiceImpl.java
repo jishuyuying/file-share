@@ -1,5 +1,6 @@
 package com.example.fileshare.service.impl;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -18,6 +19,8 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,9 +43,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements IFileService {
+public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements IFileService, ApplicationRunner {
 
-    @Value("${file-share.file-path:#{null}}")
+    @Value("${file-share.linux.file-path:#{null}}")
+    private String linuxFileRootPath;
+
+    @Value("${file-share.windows.file-path:#{null}}")
+    private String windowsFileRootPath;
+
     private String fileRootPath;
 
     private final EditMapper editMapper;
@@ -57,7 +65,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
         } else {
             filePath = this.getFilePath();
             file = new File(filePath);
-            if (!file.exists() && !file.mkdir()) {
+            if (!file.exists() && file.isDirectory() && !file.mkdir()) {
                 log.error("mkdir error");
             }
         }
@@ -320,4 +328,21 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileVo> implements 
     }
 
 
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        // 获取当前java运行
+        String os = System.getProperty("os.name");
+        if (os != null && os.toLowerCase().startsWith("windows")) {
+            log.debug("The current system is windows");
+            fileRootPath = windowsFileRootPath;
+        } else if (os != null && os.toLowerCase().startsWith("linux")) {
+            // 当前环境：linux系统
+            log.debug("The current system is linux");
+            fileRootPath = linuxFileRootPath;
+        }
+        if(!StringUtils.hasText(fileRootPath) || "null".equals(fileRootPath)){
+            fileRootPath = FileUtil.getTmpDirPath();
+        }
+        log.info("fileRootPath:{}", fileRootPath);
+    }
 }

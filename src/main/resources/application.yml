@@ -41,5 +41,7 @@ spring:
       max-request-size: 1000MB
 
 file-share:
-  # 使用绝对路径
-  file-path: /usr/local/docker/file-share
+  linux:   # 使用绝对路径
+    file-path: /usr/local/docker/file-share
+  windows:
+    file-path: D:\download

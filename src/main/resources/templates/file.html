@@ -107,6 +107,19 @@
 <!--</script>-->
 <script type="text/javascript" th:inline="none">
 
+    // 复制剪切板
+    function copyContent(content) {
+        let oInput = document.createElement('input');
+        oInput.value = content;
+        document.body.appendChild(oInput);
+        oInput.select(); // 选择对象
+        document.execCommand("Copy"); // 执行浏览器复制命令
+        oInput.className = 'oInput';//设置class名
+        document.getElementsByClassName("oInput")[0].remove();//移除这个input
+        layer.msg('复制下载链接成功', {icon: 1, time: 1500, shade: 0.4});
+    }
+
+
     $(function () {
         setActive("file");
     })
@@ -181,7 +194,9 @@
                     } else {
                         return '<button type="button" class="layui-btn layui-btn-xs layui-btn-primary" lay-event="download"><i class="layui-icon layui-icon-download-circle"></i></button>' +
                             '<button type="button" class="layui-btn layui-btn-xs" lay-event="detail"><i class="layui-icon layui-icon-play"></i></button>' +
-                            '<button type="button" class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon layui-icon-delete"></i></button>'
+                            '<button type="button" class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon layui-icon-delete"></i></button>' +
+                            '<button type="button" class="layui-btn layui-btn-xs layui-btn-normal" lay-event="copy"><i class="layui-icon layui-icon-export"></i></button>'
+
                     }
                 }
             },
@@ -242,6 +257,8 @@
                 target: '_self',
                 fileName: data.fileName
             });
+        } else if (obj.event === 'copy') {
+            copyContent("http://47.98.179.50:30996/file/view?filePath=" + data.filePath + "\\" + data.fileName)
         }
     });
 
