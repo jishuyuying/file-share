@@ -116,7 +116,7 @@
         document.execCommand("Copy"); // 执行浏览器复制命令
         oInput.className = 'oInput';//设置class名
         document.getElementsByClassName("oInput")[0].remove();//移除这个input
-        layer.msg('复制下载链接成功', {icon: 1, time: 1500, shade: 0.4});
+        layer.msg('复制下载链接成功', {icon: 1, time: 1200, shade: 0.4});
     }
 
 
@@ -249,6 +249,8 @@
                     title: '文本预览',
                 });
                 //layer.full(index);
+            }else {
+                layer.msg('该文件类型暂不支持预览')
             }
 
         } else if (obj.event === 'download') {
